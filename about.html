@@ -1,30 +1,66 @@
-<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>À propos — SRM Documents</title>
-<script src="https://cdn.tailwindcss.com"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script><link rel="stylesheet" href="assets/css/app.css">
-<!-- MVC application scripts -->
-  <script src="app/core/Namespace.js" defer></script>
-  <script src="app/config/app.config.js" defer></script>
-  <script src="app/core/EventBus.js" defer></script>
-  <script src="app/core/Router.js" defer></script>
-  <script src="app/core/SessionStore.js" defer></script>
-  <script src="app/views/components/UIComponents.js" defer></script>
-  <script src="app/models/DatabaseModel.js" defer></script>
-  <script src="app/models/AppModel.js" defer></script>
-  <script src="app/models/DocumentModel.js" defer></script>
-  <script src="app/views/components/NavigationView.js" defer></script>
-  <script src="app/views/layouts/AppLayoutView.js" defer></script>
-  <script src="app/controllers/LayoutController.js" defer></script>
-  <script src="app/bootstrap/layout.js" defer></script>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <title>À propos — SRM Workspace</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <link rel="stylesheet" href="resources/css/app.css?v=5.0.0">
+  <script src="resources/js/Core/Namespace.js?v=5.0.0" defer></script>
+  <script src="resources/js/app.js?v=5.0.0" defer></script>
+  <script src="config/app.js?v=5.0.0" defer></script>
+  <script src="resources/js/Core/EventBus.js?v=5.0.0" defer></script>
+  <script src="routes/web.js?v=5.0.0" defer></script>
+  <script src="resources/js/Core/Router.js?v=5.0.0" defer></script>
+  <script src="resources/js/Core/SessionStore.js?v=5.0.0" defer></script>
+  <script src="resources/js/Components/UI.js?v=5.0.0" defer></script>
+  <script src="app/Models/DatabaseModel.js?v=5.0.0" defer></script>
+  <script src="app/Models/AppModel.js?v=5.0.0" defer></script>
+  <script src="app/Models/DocumentModel.js?v=5.0.0" defer></script>
+  <script src="resources/js/Components/Navigation.js?v=5.0.0" defer></script>
+  <script src="resources/js/Layouts/AppLayout.js?v=5.0.0" defer></script>
+  <script src="app/Http/Controllers/LayoutController.js?v=5.0.0" defer></script>
+  <script src="resources/js/Pages/About/Index.js?v=5.0.0" defer></script>
+  <script src="resources/js/Layouts/bootstrap.js?v=5.0.0" defer></script>
 </head>
-<body class="text-slate-800"><main class="min-h-screen"><div class="ui-page"><header class="ui-page-header"><div><p class="ui-kicker">Informations</p><h2 class="ui-page-title">À propos de l’application</h2><p class="ui-page-subtitle">Une solution interne unifiée pour la préparation et le suivi des documents du Département Grands Comptes.</p></div></header>
-<section class="ui-panel about-hero"><div class="about-avatar">HE</div><div><p class="ui-kicker">Concepteur et développeur</p><h3 class="mt-2 text-3xl font-black text-slate-900">Hossame El Bezzari</h3><p class="mt-2 font-black text-blue-600">Matricule 2373</p><p class="mt-4 max-w-3xl leading-7 text-slate-600">Cette application a été conçue et développée afin de simplifier la génération des facilités de paiement, des ordres de coupure et des mises en demeure, tout en centralisant les utilisateurs, les permissions, les clients et l’historique.</p></div></section>
-<div class="mt-6 grid gap-6 lg:grid-cols-2"><section class="ui-panel"><header class="ui-panel-header"><div><h3 class="ui-panel-title">Modules disponibles</h3><p class="ui-panel-text">Fonctionnalités principales de la plateforme.</p></div></header><div class="ui-panel-body ui-list">
-<div class="ui-list-item"><div class="ui-list-icon"><span>01</span></div><div><p class="ui-list-title">Facilité de paiement</p><p class="ui-list-text">Calcul, échéancier, preview et export de l’engagement.</p></div></div>
-<div class="ui-list-item"><div class="ui-list-icon"><span>02</span></div><div><p class="ui-list-title">Ordre de coupure</p><p class="ui-list-text">Contrats, arriérés, document officiel et exports.</p></div></div>
-<div class="ui-list-item"><div class="ui-list-icon"><span>03</span></div><div><p class="ui-list-title">Mise en demeure</p><p class="ui-list-text">Lettre personnalisée avec détail des arriérés.</p></div></div>
-</div></section><section class="ui-panel"><header class="ui-panel-header"><div><h3 class="ui-panel-title">Architecture</h3><p class="ui-panel-text">Technologies et organisation.</p></div></header><div class="ui-panel-body ui-list">
-<div class="ui-list-item"><div class="ui-list-icon">DB</div><div><p class="ui-list-title">Base de données unique</p><p class="ui-list-text">Supabase PostgreSQL pour les comptes, permissions, clients, contrats et logs.</p></div></div>
-<div class="ui-list-item"><div class="ui-list-icon">UI</div><div><p class="ui-list-title">Components réutilisables</p><p class="ui-list-text">Sidebar, Header blur, Modal, Cards, Tables, Badges et Toasts communs.</p></div></div>
-<div class="ui-list-item"><div class="ui-list-icon">V2</div><div><p class="ui-list-title">Version 2.0.0</p><p class="ui-list-text">Interface responsive en Light Mode avec TailwindCSS.</p></div></div>
-</div></section></div>
-<footer class="mt-6 rounded-[24px] border border-white/90 bg-white/65 p-5 text-center text-sm font-bold text-slate-500 backdrop-blur-xl">© 2026 Hossame El Bezzari — Tous droits réservés.</footer>
-</div></main></body></html>
+<body class="text-slate-800" data-build="5.0.0">
+<main class="min-h-screen">
+  <div class="ui-page">
+    <header class="ui-page-header"><div><p class="ui-kicker">Application</p><h2 class="ui-page-title">À propos de SRM Workspace</h2><p class="ui-page-subtitle">Une solution interne conçue pour centraliser la production documentaire et le contrôle des accès.</p></div><span class="ui-badge ui-badge-violet">Version 5.0.0</span></header>
+
+    <section class="about-developer-card">
+      <div class="about-developer-avatar">HE</div>
+      <div class="about-developer-copy">
+        <span class="about-role-chip">Concepteur & développeur</span>
+        <h3>Hossame El Bezzari</h3>
+        <p class="about-matricule">Matricule 2373</p>
+        <p class="about-description">Cette application a été imaginée et développée pour simplifier la préparation des documents du Département Grands Comptes, réduire les saisies répétitives et centraliser les utilisateurs, les permissions, les clients, les contrats et la traçabilité.</p>
+      </div>
+      <div class="about-signature">SRM<br><span>Workspace</span></div>
+    </section>
+
+    <div class="mt-5 grid gap-5 lg:grid-cols-3">
+      <section class="ui-panel about-feature-panel"><div class="ui-panel-body"><div class="about-feature-number">01</div><h3>Génération documentaire</h3><p>Facilité de paiement, ordre de coupure et mise en demeure avec preview A4 et exports PDF/DOCX.</p></div></section>
+      <section class="ui-panel about-feature-panel"><div class="ui-panel-body"><div class="about-feature-number">02</div><h3>Administration</h3><p>Comptes, rôles, statuts et permissions détaillées pour chaque module et chaque action.</p></div></section>
+      <section class="ui-panel about-feature-panel"><div class="ui-panel-body"><div class="about-feature-number">03</div><h3>Traçabilité</h3><p>Historique des connexions, exports, modifications de comptes et changements de permissions.</p></div></section>
+    </div>
+
+    <section class="ui-panel mt-5">
+      <header class="ui-panel-header"><div><p class="ui-kicker">Architecture</p><h3 class="ui-panel-title mt-1">Organisation inspirée de Laravel InertiaJS</h3><p class="ui-panel-text">Séparation claire entre la logique métier, les données et l’interface.</p></div></header>
+      <div class="ui-panel-body about-architecture-grid">
+        <article><span>app/Http/Controllers</span><p>Orchestration des actions et règles métier.</p></article>
+        <article><span>app/Models</span><p>Accès aux données locales et Supabase.</p></article>
+        <article><span>resources/js/Pages</span><p>Pages spécifiques de l’application.</p></article>
+        <article><span>resources/js/Layouts</span><p>AuthLayout et AppLayout communs.</p></article>
+        <article><span>resources/js/Components</span><p>Navigation, modals, cards, badges et toasts.</p></article>
+        <article><span>database/database.sql</span><p>Base PostgreSQL Supabase centralisée.</p></article>
+      </div>
+    </section>
+
+    <footer class="about-footer">© 2026 Hossame El Bezzari · SRM Workspace · Tous droits réservés.</footer>
+  </div>
+</main>
+</body>
+</html>

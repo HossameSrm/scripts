@@ -1,38 +1,77 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Tableau de bord — SRM Documents</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Tableau de bord — SRM Workspace</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-  <link rel="stylesheet" href="assets/css/app.css">
+  <link rel="stylesheet" href="resources/css/app.css?v=5.0.0">
 
-<!-- MVC application scripts -->
-  <script src="app/core/Namespace.js" defer></script>
-  <script src="app/config/app.config.js" defer></script>
-  <script src="app/core/EventBus.js" defer></script>
-  <script src="app/core/Router.js" defer></script>
-  <script src="app/core/SessionStore.js" defer></script>
-  <script src="app/views/components/UIComponents.js" defer></script>
-  <script src="app/models/DatabaseModel.js" defer></script>
-  <script src="app/models/AppModel.js" defer></script>
-  <script src="app/models/DocumentModel.js" defer></script>
-  <script src="app/views/components/NavigationView.js" defer></script>
-  <script src="app/views/layouts/AppLayoutView.js" defer></script>
-  <script src="app/controllers/LayoutController.js" defer></script>
-  <script src="app/bootstrap/layout.js" defer></script>
-  <script src="app/models/DashboardModel.js" defer></script>
-  <script src="app/views/pages/DashboardView.js" defer></script>
-  <script src="app/controllers/DashboardController.js" defer></script>
-  <script src="app/bootstrap/dashboard.js" defer></script>
+  <script src="resources/js/Core/Namespace.js?v=5.0.0" defer></script>
+  <script src="resources/js/app.js?v=5.0.0" defer></script>
+  <script src="config/app.js?v=5.0.0" defer></script>
+  <script src="resources/js/Core/EventBus.js?v=5.0.0" defer></script>
+  <script src="routes/web.js?v=5.0.0" defer></script>
+  <script src="resources/js/Core/Router.js?v=5.0.0" defer></script>
+  <script src="resources/js/Core/SessionStore.js?v=5.0.0" defer></script>
+  <script src="resources/js/Components/UI.js?v=5.0.0" defer></script>
+  <script src="app/Models/DatabaseModel.js?v=5.0.0" defer></script>
+  <script src="app/Models/AppModel.js?v=5.0.0" defer></script>
+  <script src="app/Models/DocumentModel.js?v=5.0.0" defer></script>
+  <script src="resources/js/Components/Navigation.js?v=5.0.0" defer></script>
+  <script src="resources/js/Layouts/AppLayout.js?v=5.0.0" defer></script>
+  <script src="app/Http/Controllers/LayoutController.js?v=5.0.0" defer></script>
+  <script src="resources/js/Layouts/bootstrap.js?v=5.0.0" defer></script>
+  <script src="app/Models/DashboardModel.js?v=5.0.0" defer></script>
+  <script src="resources/js/Pages/Dashboard/Index.js?v=5.0.0" defer></script>
+  <script src="app/Http/Controllers/DashboardController.js?v=5.0.0" defer></script>
+  <script src="resources/js/Pages/Dashboard/bootstrap.js?v=5.0.0" defer></script>
 </head>
-<body class="text-slate-800">
-<main class="min-h-screen"><div id="dashboardRoot" class="ui-page opacity-0 transition-opacity">
-  <header class="ui-page-header"><div><p class="ui-kicker">Vue générale</p><h2 class="ui-page-title">Tableau de bord</h2><p class="ui-page-subtitle">Consultez les chiffres clés et accédez rapidement aux générateurs autorisés.</p></div></header>
-  <section id="statsGrid" class="ui-grid-stats"></section>
-  <div class="mt-6 grid gap-6 xl:grid-cols-[1.15fr_.85fr]">
-    <section class="ui-panel"><header class="ui-panel-header"><div><h3 class="ui-panel-title">Actions rapides</h3><p class="ui-panel-text">Ouvrez directement un module documentaire.</p></div></header><div id="quickActions" class="ui-panel-body quick-actions"></div></section>
-    <section class="ui-panel"><header class="ui-panel-header"><div><h3 class="ui-panel-title">Activité récente</h3><p class="ui-panel-text">Dernières opérations enregistrées.</p></div><a class="ui-btn ui-btn-secondary" href="history.html">Voir tout</a></header><div id="recentActivity" class="ui-panel-body ui-list"></div></section>
+<body class="text-slate-800" data-build="5.0.0">
+<main class="min-h-screen">
+  <div id="dashboardRoot" class="ui-page opacity-0 transition-opacity">
+    <section class="dashboard-hero">
+      <div class="dashboard-hero-copy">
+        <p class="ui-kicker">Centre de pilotage</p>
+        <h2 id="dashboardGreeting" class="dashboard-hero-title">Bonjour.</h2>
+        <p class="dashboard-hero-text">Retrouvez vos indicateurs, vos accès et les dernières opérations depuis un seul espace de travail.</p>
+        <div id="heroActions" class="dashboard-hero-actions"></div>
+      </div>
+      <div class="dashboard-hero-visual">
+        <div class="dashboard-visual-card card-one"><span>PDF</span><strong>Export rapide</strong></div>
+        <div class="dashboard-visual-card card-two"><span>DOCX</span><strong>Documents éditables</strong></div>
+        <div class="dashboard-visual-center">SR</div>
+      </div>
+    </section>
+
+    <section id="statsGrid" class="ui-grid-stats mt-5"></section>
+
+    <div class="mt-5 grid gap-5 xl:grid-cols-[1.08fr_.92fr]">
+      <section class="ui-panel">
+        <header class="ui-panel-header">
+          <div><p class="ui-kicker">Accès directs</p><h3 class="ui-panel-title mt-1">Créer un document</h3><p class="ui-panel-text">Ouvrez un générateur autorisé.</p></div>
+        </header>
+        <div id="quickActions" class="ui-panel-body quick-actions"></div>
+      </section>
+
+      <section class="ui-panel">
+        <header class="ui-panel-header">
+          <div><p class="ui-kicker">Journal</p><h3 class="ui-panel-title mt-1">Activité récente</h3><p class="ui-panel-text">Dernières opérations enregistrées.</p></div>
+          <a class="ui-btn ui-btn-secondary" href="history.html">Tout afficher</a>
+        </header>
+        <div id="recentActivity" class="ui-panel-body ui-list"></div>
+      </section>
+    </div>
+
+    <section class="dashboard-system-strip mt-5">
+      <div><span class="system-status-dot"></span><strong>Application opérationnelle</strong><small>Mode local disponible · Supabase prêt à connecter</small></div>
+      <div class="dashboard-system-meta"><span>Version 5.0.0</span><span>Design Inertia-style</span><span>Light UI</span></div>
+    </section>
   </div>
-</div></main>
-</body></html>
+</main>
+</body>
+</html>

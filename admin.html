@@ -1,27 +1,55 @@
 <!DOCTYPE html>
-<html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Administration — SRM Documents</title>
-<script src="https://cdn.tailwindcss.com"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script><link rel="stylesheet" href="assets/css/app.css">
-<!-- MVC application scripts -->
-  <script src="app/core/Namespace.js" defer></script>
-  <script src="app/config/app.config.js" defer></script>
-  <script src="app/core/EventBus.js" defer></script>
-  <script src="app/core/Router.js" defer></script>
-  <script src="app/core/SessionStore.js" defer></script>
-  <script src="app/views/components/UIComponents.js" defer></script>
-  <script src="app/models/DatabaseModel.js" defer></script>
-  <script src="app/models/AppModel.js" defer></script>
-  <script src="app/models/DocumentModel.js" defer></script>
-  <script src="app/views/components/NavigationView.js" defer></script>
-  <script src="app/views/layouts/AppLayoutView.js" defer></script>
-  <script src="app/controllers/LayoutController.js" defer></script>
-  <script src="app/bootstrap/layout.js" defer></script>
-  <script src="app/models/UserModel.js" defer></script>
-  <script src="app/views/pages/AdminView.js" defer></script>
-  <script src="app/controllers/AdminController.js" defer></script>
-  <script src="app/bootstrap/admin.js" defer></script>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <title>Administration — SRM Workspace</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <link rel="stylesheet" href="resources/css/app.css?v=5.0.0">
+  <script src="resources/js/Core/Namespace.js?v=5.0.0" defer></script>
+  <script src="resources/js/app.js?v=5.0.0" defer></script>
+  <script src="config/app.js?v=5.0.0" defer></script>
+  <script src="resources/js/Core/EventBus.js?v=5.0.0" defer></script>
+  <script src="routes/web.js?v=5.0.0" defer></script>
+  <script src="resources/js/Core/Router.js?v=5.0.0" defer></script>
+  <script src="resources/js/Core/SessionStore.js?v=5.0.0" defer></script>
+  <script src="resources/js/Components/UI.js?v=5.0.0" defer></script>
+  <script src="app/Models/DatabaseModel.js?v=5.0.0" defer></script>
+  <script src="app/Models/AppModel.js?v=5.0.0" defer></script>
+  <script src="app/Models/DocumentModel.js?v=5.0.0" defer></script>
+  <script src="resources/js/Components/Navigation.js?v=5.0.0" defer></script>
+  <script src="resources/js/Layouts/AppLayout.js?v=5.0.0" defer></script>
+  <script src="app/Http/Controllers/LayoutController.js?v=5.0.0" defer></script>
+  <script src="resources/js/Layouts/bootstrap.js?v=5.0.0" defer></script>
+  <script src="app/Models/UserModel.js?v=5.0.0" defer></script>
+  <script src="resources/js/Pages/Admin/Users.js?v=5.0.0" defer></script>
+  <script src="app/Http/Controllers/AdminController.js?v=5.0.0" defer></script>
+  <script src="resources/js/Pages/Admin/bootstrap.js?v=5.0.0" defer></script>
 </head>
-<body class="text-slate-800"><main class="min-h-screen"><div class="ui-page">
-<header class="ui-page-header"><div><p class="ui-kicker">Administration</p><h2 class="ui-page-title">Utilisateurs et permissions</h2><p class="ui-page-subtitle">Créez les comptes, attribuez les modules autorisés et contrôlez les exports PDF/DOCX.</p></div><button id="addUserBtn" class="ui-btn ui-btn-primary"><span class="ui-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span> Nouvel utilisateur</button></header>
-<section id="adminStats" class="ui-grid-stats"></section>
-<section class="ui-panel mt-6"><header class="ui-panel-header"><div><h3 class="ui-panel-title">Liste des utilisateurs</h3><p class="ui-panel-text">Le compte propriétaire ne peut pas être supprimé.</p></div></header><div class="ui-table-wrap"><table class="ui-table"><thead><tr><th>Utilisateur</th><th>Matricule</th><th>Rôle</th><th>Statut</th><th>Dernière connexion</th><th>Actions</th></tr></thead><tbody id="usersBody"><tr><td colspan="6"><div class="ui-empty"><p>Chargement...</p></div></td></tr></tbody></table></div></section>
-</div></main></body></html>
+<body class="text-slate-800" data-build="5.0.0">
+<main class="min-h-screen">
+  <div class="ui-page">
+    <header class="ui-page-header">
+      <div><p class="ui-kicker">Contrôle des accès</p><h2 class="ui-page-title">Utilisateurs et permissions</h2><p class="ui-page-subtitle">Gérez les comptes, les statuts et les autorisations détaillées de chaque collaborateur.</p></div>
+      <button id="addUserBtn" class="ui-btn ui-btn-primary"><span class="ui-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span> Nouvel utilisateur</button>
+    </header>
+
+    <section id="adminStats" class="ui-grid-stats"></section>
+
+    <section class="ui-panel mt-5">
+      <header class="ui-panel-header admin-table-toolbar">
+        <div><p class="ui-kicker">Répertoire</p><h3 class="ui-panel-title mt-1">Comptes utilisateurs</h3><p class="ui-panel-text">Le compte propriétaire reste protégé.</p></div>
+        <div class="admin-filters">
+          <input id="adminSearch" class="ui-input" placeholder="Rechercher un nom, matricule…">
+          <select id="adminRoleFilter" class="ui-select"><option value="">Tous les rôles</option><option value="admin">Administrateurs</option><option value="user">Utilisateurs</option></select>
+          <select id="adminStatusFilter" class="ui-select"><option value="">Tous les statuts</option><option value="active">Actifs</option><option value="disabled">Désactivés</option></select>
+        </div>
+      </header>
+      <div class="ui-table-wrap"><table class="ui-table"><thead><tr><th>Utilisateur</th><th>Matricule</th><th>Rôle</th><th>Statut</th><th>Dernière connexion</th><th>Actions</th></tr></thead><tbody id="usersBody"><tr><td colspan="6"><div class="ui-empty"><p>Chargement…</p></div></td></tr></tbody></table></div>
+    </section>
+  </div>
+</main>
+</body>
+</html>

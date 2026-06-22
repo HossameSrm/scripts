@@ -1,23 +1,55 @@
-<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Historique — SRM Documents</title>
-<script src="https://cdn.tailwindcss.com"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script><link rel="stylesheet" href="assets/css/app.css">
-<!-- MVC application scripts -->
-  <script src="app/core/Namespace.js" defer></script>
-  <script src="app/config/app.config.js" defer></script>
-  <script src="app/core/EventBus.js" defer></script>
-  <script src="app/core/Router.js" defer></script>
-  <script src="app/core/SessionStore.js" defer></script>
-  <script src="app/views/components/UIComponents.js" defer></script>
-  <script src="app/models/DatabaseModel.js" defer></script>
-  <script src="app/models/AppModel.js" defer></script>
-  <script src="app/models/DocumentModel.js" defer></script>
-  <script src="app/views/components/NavigationView.js" defer></script>
-  <script src="app/views/layouts/AppLayoutView.js" defer></script>
-  <script src="app/controllers/LayoutController.js" defer></script>
-  <script src="app/bootstrap/layout.js" defer></script>
-  <script src="app/models/ActivityModel.js" defer></script>
-  <script src="app/views/pages/HistoryView.js" defer></script>
-  <script src="app/controllers/HistoryController.js" defer></script>
-  <script src="app/bootstrap/history.js" defer></script>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <title>Historique — SRM Workspace</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <link rel="stylesheet" href="resources/css/app.css?v=5.0.0">
+  <script src="resources/js/Core/Namespace.js?v=5.0.0" defer></script>
+  <script src="resources/js/app.js?v=5.0.0" defer></script>
+  <script src="config/app.js?v=5.0.0" defer></script>
+  <script src="resources/js/Core/EventBus.js?v=5.0.0" defer></script>
+  <script src="routes/web.js?v=5.0.0" defer></script>
+  <script src="resources/js/Core/Router.js?v=5.0.0" defer></script>
+  <script src="resources/js/Core/SessionStore.js?v=5.0.0" defer></script>
+  <script src="resources/js/Components/UI.js?v=5.0.0" defer></script>
+  <script src="app/Models/DatabaseModel.js?v=5.0.0" defer></script>
+  <script src="app/Models/AppModel.js?v=5.0.0" defer></script>
+  <script src="app/Models/DocumentModel.js?v=5.0.0" defer></script>
+  <script src="resources/js/Components/Navigation.js?v=5.0.0" defer></script>
+  <script src="resources/js/Layouts/AppLayout.js?v=5.0.0" defer></script>
+  <script src="app/Http/Controllers/LayoutController.js?v=5.0.0" defer></script>
+  <script src="resources/js/Layouts/bootstrap.js?v=5.0.0" defer></script>
+  <script src="app/Models/ActivityModel.js?v=5.0.0" defer></script>
+  <script src="resources/js/Pages/History/Index.js?v=5.0.0" defer></script>
+  <script src="app/Http/Controllers/HistoryController.js?v=5.0.0" defer></script>
+  <script src="resources/js/Pages/History/bootstrap.js?v=5.0.0" defer></script>
 </head>
-<body class="text-slate-800"><main class="min-h-screen"><div class="ui-page"><header class="ui-page-header"><div><p class="ui-kicker">Traçabilité</p><h2 class="ui-page-title">Historique des activités</h2><p class="ui-page-subtitle">Connexions, exports, gestion des comptes et modifications de permissions.</p></div><span id="historyCount" class="ui-badge ui-badge-blue">Chargement...</span></header>
-<section class="ui-panel"><div class="ui-table-wrap"><table class="ui-table"><thead><tr><th>Utilisateur / Date</th><th>Action</th><th>Module</th><th>Description</th></tr></thead><tbody id="historyBody"><tr><td colspan="4"><div class="ui-empty"><p>Chargement...</p></div></td></tr></tbody></table></div></section></div></main></body></html>
+<body class="text-slate-800" data-build="5.0.0">
+<main class="min-h-screen">
+  <div class="ui-page">
+    <header class="ui-page-header">
+      <div><p class="ui-kicker">Traçabilité</p><h2 class="ui-page-title">Historique des activités</h2><p class="ui-page-subtitle">Consultez les connexions, exports et opérations administratives enregistrées.</p></div>
+      <span id="historyCount" class="ui-badge ui-badge-blue">Chargement…</span>
+    </header>
+
+    <section class="history-summary-grid mb-5">
+      <article><span>Connexion</span><strong id="historyLoginCount">0</strong></article>
+      <article><span>Exports</span><strong id="historyExportCount">0</strong></article>
+      <article><span>Administration</span><strong id="historyAdminCount">0</strong></article>
+    </section>
+
+    <section class="ui-panel">
+      <header class="ui-panel-header history-toolbar">
+        <div><p class="ui-kicker">Journal système</p><h3 class="ui-panel-title mt-1">Toutes les opérations</h3></div>
+        <div class="history-filters"><input id="historySearch" class="ui-input" placeholder="Rechercher une activité…"><select id="historyModuleFilter" class="ui-select"><option value="">Tous les modules</option><option value="auth">Authentification</option><option value="calcul">Facilité</option><option value="order">Ordre de coupure</option><option value="notice">Mise en demeure</option><option value="admin">Administration</option></select></div>
+      </header>
+      <div class="ui-table-wrap"><table class="ui-table"><thead><tr><th>Utilisateur / Date</th><th>Action</th><th>Module</th><th>Description</th></tr></thead><tbody id="historyBody"><tr><td colspan="4"><div class="ui-empty"><p>Chargement…</p></div></td></tr></tbody></table></div>
+    </section>
+  </div>
+</main>
+</body>
+</html>

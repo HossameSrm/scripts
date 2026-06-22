@@ -1,19 +1,39 @@
-# SRM-FM Documents — MVC Edition
+# SRM Workspace — Structure inspirée de Laravel InertiaJS
 
-Application web statique compatible avec **GitHub Pages**, construite avec HTML, TailwindCSS CDN et JavaScript ES6, reliée à une seule base **Supabase PostgreSQL**.
+Application interne de gestion documentaire pour la Direction Clientèle — Département Grands Comptes.
 
-## Architecture MVC
+## Connexion locale initiale
 
-Le projet suit une séparation claire :
+- Identifiant : `hossame`
+- Mot de passe : `titigoza123`
 
-- **Models** : accès Supabase, sessions, utilisateurs, activité, dashboard et documents.
-- **Views** : composants UI, navigation, layouts et affichage des pages.
-- **Controllers** : authentification, layout, administration, historique, sélection client et générateurs documentaires.
-- **Bootstrap** : instanciation des Models, Views et Controllers pour chaque page.
-- **Core** : routeur, événements et stockage de session.
+Les informations de connexion ne sont pas affichées sur la page d’authentification.
+
+## Architecture
 
 ```text
-srm_documents_app_mvc/
+srm-workspace/
+├── app/
+│   ├── Http/
+│   │   └── Controllers/
+│   │       ├── Documents/
+│   │       └── *.js
+│   └── Models/
+├── config/
+│   └── app.js
+├── database/
+│   └── database.sql
+├── resources/
+│   ├── css/
+│   │   └── app.css
+│   └── js/
+│       ├── app.js
+│       ├── Components/
+│       ├── Core/
+│       ├── Layouts/
+│       └── Pages/
+├── routes/
+│   └── web.js
 ├── index.html
 ├── dashboard.html
 ├── calcul.html
@@ -22,131 +42,57 @@ srm_documents_app_mvc/
 ├── history.html
 ├── admin.html
 ├── about.html
-├── 403.html
-├── database.sql
-├── assets/
-│   └── css/
-│       └── app.css
-└── app/
-    ├── config/
-    │   └── app.config.js
-    ├── core/
-    │   ├── Namespace.js
-    │   ├── EventBus.js
-    │   ├── Router.js
-    │   └── SessionStore.js
-    ├── models/
-    │   ├── DatabaseModel.js
-    │   ├── AuthModel.js
-    │   ├── AppModel.js
-    │   ├── DashboardModel.js
-    │   ├── UserModel.js
-    │   ├── ActivityModel.js
-    │   └── DocumentModel.js
-    ├── views/
-    │   ├── components/
-    │   │   ├── UIComponents.js
-    │   │   └── NavigationView.js
-    │   ├── layouts/
-    │   │   └── AppLayoutView.js
-    │   └── pages/
-    │       ├── AuthView.js
-    │       ├── DashboardView.js
-    │       ├── AdminView.js
-    │       └── HistoryView.js
-    ├── controllers/
-    │   ├── AuthController.js
-    │   ├── LayoutController.js
-    │   ├── DashboardController.js
-    │   ├── AdminController.js
-    │   ├── HistoryController.js
-    │   ├── ClientDataController.js
-    │   └── documents/
-    │       ├── PaymentScheduleController.js
-    │       ├── CutOrderController.js
-    │       └── FormalNoticeController.js
-    └── bootstrap/
-        ├── auth.js
-        ├── layout.js
-        ├── dashboard.js
-        ├── admin.js
-        ├── history.js
-        └── client-data.js
+└── 403.html
 ```
 
-## Base de données unique
+Cette organisation reprend les principes d’un projet Laravel + InertiaJS :
 
-Le projet utilise uniquement `database.sql`. Ce fichier crée et configure :
+- `app/Http/Controllers` : orchestration des actions.
+- `app/Models` : accès à la base locale ou Supabase.
+- `resources/js/Pages` : pages métier.
+- `resources/js/Layouts` : AuthLayout et AppLayout.
+- `resources/js/Components` : composants UI réutilisables.
+- `routes/web.js` : registre central des routes.
+- `database/database.sql` : schéma PostgreSQL Supabase unique.
 
-- utilisateurs et rôles ;
-- sessions ;
-- permissions par module et action ;
-- clients ;
-- contrats ;
-- arriérés ;
-- documents générés ;
-- journal d’activité ;
-- fonctions PostgreSQL sécurisées utilisées par l’application.
+## Mode local
 
-Le projet n’utilise pas `database.json` comme base principale.
+L’application fonctionne directement sans Supabase grâce à une base locale dans `localStorage`. Ce mode est pratique pour tester sur un navigateur, mais les données ne sont pas partagées entre plusieurs postes.
 
-## Installation Supabase
+## Mode Supabase partagé
 
-1. Créer un projet Supabase.
-2. Ouvrir **SQL Editor**.
-3. Copier et exécuter tout le fichier `database.sql`.
-4. Ouvrir **Project Settings > API**.
-5. Copier le `Project URL` et la clé `anon public`.
-6. Compléter `app/config/app.config.js` :
+1. Créez un projet Supabase.
+2. Ouvrez le SQL Editor.
+3. Exécutez entièrement `database/database.sql`.
+4. Modifiez `config/app.js` :
 
 ```js
-window.APP_CONFIG = Object.freeze({
-  SUPABASE_URL: 'https://xxxx.supabase.co',
-  SUPABASE_ANON_KEY: 'votre-cle-anon-public',
-  DATA_MODE: 'auto',
-  SESSION_STORAGE_KEY: 'srm_documents_session_v3',
-  LAST_CLIENT_KEY: 'srm_documents_last_client_v3'
-});
+SUPABASE_URL: 'https://votre-projet.supabase.co',
+SUPABASE_ANON_KEY: 'votre-cle-anon-publice',
 ```
 
-Ne jamais placer la clé `service_role` dans GitHub ou dans le navigateur.
+5. Laissez `DATA_MODE: 'auto'` pour utiliser Supabase automatiquement lorsqu’il est configuré.
 
-## Compte propriétaire initial
+Ne placez jamais une clé `service_role` dans GitHub Pages.
 
-Le compte propriétaire est créé automatiquement par `database.sql` et par la base locale de secours. Les identifiants ne sont jamais préremplis ni affichés dans la page d’authentification.
+## Déploiement GitHub Pages
 
-## Permissions
+1. Décompressez le projet.
+2. Placez tout le contenu directement à la racine du dépôt GitHub.
+3. Vérifiez que `index.html` se trouve bien à la racine.
+4. Activez GitHub Pages sur la branche principale.
+5. Après chaque nouvelle version, rechargez avec `Ctrl + F5`.
 
-L’administrateur peut autoriser séparément, pour chaque utilisateur :
+## Modules
 
-- accès au module ;
-- création ;
-- modification ;
-- suppression ;
-- export PDF ;
-- export DOCX.
-
-Les modules disponibles sont : Dashboard, Facilité de paiement, Ordre de coupure, Mise en demeure, Historique, Administration et À propos.
-
-## Publication GitHub Pages
-
-1. Envoyer tout le contenu du dossier dans un repository GitHub.
-2. Ouvrir **Settings > Pages**.
-3. Choisir **Deploy from a branch**.
-4. Choisir la branche `main` et le dossier `/root`.
-5. Ouvrir l’URL générée par GitHub Pages.
+- Tableau de bord.
+- Facilité de paiement.
+- Ordre de coupure.
+- Mise en demeure.
+- Historique.
+- Administration des utilisateurs et permissions.
+- Page À propos.
 
 ## Développeur
 
-Conçu et développé par **Hossame El Bezzari — Matricule 2373**.
-
-## Mode de base de données
-
-L’application utilise `DATA_MODE: 'auto'` dans `app/config/app.config.js` :
-
-- si Supabase est configuré, tous les postes utilisent la même base PostgreSQL en ligne ;
-- si Supabase n’est pas encore configuré, l’application démarre avec une base locale du navigateur afin de permettre les tests immédiats.
-
-La base locale est propre à chaque navigateur et ne synchronise pas les utilisateurs entre les postes. Pour un usage partagé entre les employés, exécutez `database.sql` dans Supabase puis renseignez uniquement `SUPABASE_URL` et `SUPABASE_ANON_KEY`.
-
-Les champs de la page d’authentification restent toujours vides et aucun mot de passe n’est affiché dans l’interface.
+Conçu et développé par **Hossame El Bezzari**, matricule **2373**.
