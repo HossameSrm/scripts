@@ -11,10 +11,10 @@
     DATA_MODE: 'auto',
     SUPABASE_URL: 'https://VOTRE-PROJET.supabase.co',
     SUPABASE_ANON_KEY: 'VOTRE_CLE_ANON_PUBLIC',
-    SESSION_STORAGE_KEY: 'srm_documents_session_v6',
-    LAST_CLIENT_KEY: 'srm_documents_last_client_v6',
-    LOCAL_DATABASE_KEY: 'srm_documents_local_database_v6',
-    LOCAL_DATABASE_VERSION: 6,
+    SESSION_STORAGE_KEY: 'srm_documents_session_v8',
+    LAST_CLIENT_KEY: 'srm_documents_last_client_v8',
+    LOCAL_DATABASE_KEY: 'srm_documents_local_database_v8',
+    LOCAL_DATABASE_VERSION: 8,
     LOCAL_OWNER_USERNAME: 'hossame',
     LOCAL_OWNER_PASSWORD_SHA256: '320a0308d248d876f26ed234d706d18e1575e1d8905c9403fd56fd6ec2967249'
   });

@@ -20,7 +20,6 @@
       const url = new URL(item.href, window.location.href);
       const current = this.currentLocation();
       const file = (url.pathname.split('/').pop() || '').toLowerCase();
-
       if (file !== current.file) return false;
 
       const requested = new URLSearchParams(url.search);
@@ -32,9 +31,16 @@
     render(item, page, options = {}) {
       const active = this.isActive(item, page);
       const nested = options.nested === true;
-      const icon = item.icon ? `<span class="app-nav-icon">${window.UI.icon(item.icon)}</span>` : '<span class="app-nav-dot"></span>';
+      const icon = item.icon
+        ? `<span class="app-nav-icon">${window.UI.icon(item.icon)}</span>`
+        : '<span class="app-nav-dot" aria-hidden="true"></span>';
 
-      return `<a class="app-nav-link ${nested ? 'app-nav-link-nested' : ''} ${active ? 'active' : ''}" href="${window.UI.esc(item.href)}" data-nav-label="${window.UI.esc(item.label.toLowerCase())}">
+      return `<a
+        class="app-nav-link ${nested ? 'app-nav-link-nested' : ''} ${active ? 'active' : ''}"
+        href="${window.UI.esc(item.href)}"
+        data-nav-label="${window.UI.esc(item.label.toLowerCase())}"
+        ${active ? 'aria-current="page"' : ''}
+      >
         ${icon}
         <span class="app-nav-label min-w-0 flex-1 truncate">${window.UI.esc(item.label)}</span>
         ${item.badge ? `<span class="app-nav-badge">${window.UI.esc(item.badge)}</span>` : ''}

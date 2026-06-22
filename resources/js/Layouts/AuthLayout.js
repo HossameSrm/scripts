@@ -43,7 +43,7 @@
                     <span class="auth-field-label">Identifiant ou matricule</span>
                     <div class="auth-input-wrap">
                       <span class="auth-input-icon">${window.UI.icon('user')}</span>
-                      <input id="username" name="srm-workspace-login-v6" class="auth-input" autocomplete="off" autocapitalize="none" spellcheck="false" data-lpignore="true" placeholder="Saisissez votre identifiant" required>
+                      <input id="username" name="srm-workspace-login-v8" class="auth-input" autocomplete="off" autocapitalize="none" spellcheck="false" data-lpignore="true" placeholder="Saisissez votre identifiant" required>
                     </div>
                   </label>
 
@@ -51,7 +51,7 @@
                     <span class="auth-field-label">Mot de passe</span>
                     <div class="auth-input-wrap">
                       <span class="auth-input-icon">${window.UI.icon('key')}</span>
-                      <input id="password" name="srm-workspace-password-v6" type="password" class="auth-input" autocomplete="new-password" data-lpignore="true" placeholder="Votre mot de passe" required>
+                      <input id="password" name="srm-workspace-password-v8" type="password" class="auth-input" autocomplete="new-password" data-lpignore="true" placeholder="Votre mot de passe" required>
                       <button id="togglePassword" type="button" class="auth-toggle">Afficher</button>
                     </div>
                   </label>

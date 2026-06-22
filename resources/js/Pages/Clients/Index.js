@@ -61,7 +61,6 @@
       this.clients = clients || [];
       this.selectedId = selectedId;
       this.permissions = permissions || {};
-      this.renderStats();
       this.renderList();
       const selected = this.clients.find(item => item.id === this.selectedId);
       this.renderEditor(selected || this.emptyClient(), permissions, !selected);
@@ -72,7 +71,9 @@
       const contracts = this.clients.reduce((sum, client) => sum + (client.contracts || []).length, 0);
       const arrears = this.clients.reduce((sum, client) => sum + (client.contracts || []).reduce((c, contract) => c + (contract.arrears || []).length, 0), 0);
       const balance = this.clients.reduce((sum, client) => sum + this.clientTotal(client), 0);
-      document.getElementById('clientStats').innerHTML = [
+      const host = document.getElementById('clientStats');
+      if (!host) return;
+      host.innerHTML = [
         { label: 'Clients', value: this.clients.length, icon: 'client', tone: 'blue', note: `${this.clients.filter(item => item.status !== 'inactive').length} actifs` },
         { label: 'Contrats', value: contracts, icon: 'contract', tone: 'violet', note: 'EAU, BT et MT' },
         { label: 'Factures impayées', value: arrears, icon: 'invoice', tone: 'amber', note: 'Toutes périodes' },
@@ -134,24 +135,22 @@
             </div>
           </header>
 
-          <section class="client-section-card">
-            <div class="client-section-heading"><span class="client-section-icon">${window.UI.icon('client')}</span><div><h3>Informations du client</h3><p>Identité, coordonnées et rattachement commercial.</p></div></div>
+          <section id="client-general-section" class="client-section-card">
+            <div class="client-section-heading"><span class="client-section-icon">${window.UI.icon('client')}</span><div><h3>Informations générales</h3><p>Références, coordonnées et rattachement commercial du client.</p></div></div>
             <div class="client-form-grid">
               <label><span class="ui-label">Numéro client *</span><input class="ui-input" name="clientNumber" value="${window.UI.esc(client.clientNumber || '')}" required ${disabled}></label>
-              <label><span class="ui-label">Type</span><select class="ui-select" name="type" ${disabled}><option value="company" ${client.type !== 'person' ? 'selected' : ''}>Personne morale</option><option value="person" ${client.type === 'person' ? 'selected' : ''}>Particulier</option></select></label>
+              <label><span class="ui-label">Statut</span><select class="ui-select" name="status" ${disabled}><option value="active" ${client.status !== 'inactive' ? 'selected' : ''}>Actif</option><option value="inactive" ${client.status === 'inactive' ? 'selected' : ''}>Inactif</option></select></label>
               <label class="md:col-span-2"><span class="ui-label">Nom / Raison sociale *</span><input class="ui-input" name="name" value="${window.UI.esc(client.name || '')}" required ${disabled}></label>
               <label><span class="ui-label">CIN / ICE</span><input class="ui-input" name="cin" value="${window.UI.esc(client.cin || '')}" ${disabled}></label>
-              <label><span class="ui-label">Représenté par</span><input class="ui-input" name="representedBy" value="${window.UI.esc(client.representedBy || '')}" ${disabled}></label>
               <label><span class="ui-label">Téléphone</span><input class="ui-input" name="phone" value="${window.UI.esc(client.phone || '')}" ${disabled}></label>
               <label><span class="ui-label">E-mail</span><input class="ui-input" type="email" name="email" value="${window.UI.esc(client.email || '')}" ${disabled}></label>
               <label><span class="ui-label">Ville</span><input class="ui-input" name="city" value="${window.UI.esc(client.city || '')}" ${disabled}></label>
               <label><span class="ui-label">Tournée</span><input class="ui-input" name="tourne" value="${window.UI.esc(client.tourne || '')}" ${disabled}></label>
               <label class="md:col-span-2"><span class="ui-label">Adresse</span><textarea class="ui-textarea" name="address" rows="2" ${disabled}>${window.UI.esc(client.address || '')}</textarea></label>
-              <label><span class="ui-label">Statut</span><select class="ui-select" name="status" ${disabled}><option value="active" ${client.status !== 'inactive' ? 'selected' : ''}>Actif</option><option value="inactive" ${client.status === 'inactive' ? 'selected' : ''}>Inactif</option></select></label>
             </div>
           </section>
 
-          <section class="client-section-card">
+          <section id="client-contracts-section" class="client-section-card">
             <div class="client-section-heading client-section-heading-actions">
               <div class="flex items-center gap-3"><span class="client-section-icon">${window.UI.icon('contract')}</span><div><h3>Contrats du client</h3><p>Ajoutez autant de contrats EAU, BT ou MT que nécessaire.</p></div></div>
               ${canEdit ? `<button type="button" class="ui-btn ui-btn-secondary" data-action="add-contract">${window.UI.icon('plus')} Ajouter un contrat</button>` : ''}
@@ -297,12 +296,12 @@
       const client = {
         id: form.dataset.clientId || '',
         clientNumber: String(data.get('clientNumber') || '').trim(),
-        type: data.get('type') || 'company',
+        type: 'company',
         name: String(data.get('name') || '').trim(),
         cin: String(data.get('cin') || '').trim(),
         phone: String(data.get('phone') || '').trim(),
         email: String(data.get('email') || '').trim(),
-        representedBy: String(data.get('representedBy') || '').trim(),
+        representedBy: '',
         address: String(data.get('address') || '').trim(),
         city: String(data.get('city') || '').trim(),
         tourne: String(data.get('tourne') || '').trim(),

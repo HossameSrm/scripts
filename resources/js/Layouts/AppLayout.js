@@ -9,6 +9,7 @@
 
     render({ db, user, permissions, page }) {
       document.body.classList.add('app-body');
+      document.body.classList.toggle('has-subnav', ['clients', 'admin', 'history'].includes(page.module));
       document.querySelector('main')?.classList.add('app-main');
 
       const overlay = document.createElement('div');
@@ -33,10 +34,23 @@
       document.body.prepend(aside);
       document.body.prepend(overlay);
       document.body.appendChild(footer);
-      document.body.dataset.layout = 'metronic-inertia-components-v7';
+      document.body.dataset.layout = 'metronic-flat-v8';
 
       this.sidebarComponent.bind(document);
-      document.getElementById('sidebarCollapse')?.addEventListener('click', () => document.body.classList.toggle('sidebar-collapsed'));
+      header.querySelectorAll('.app-subnav-link[href^="#"]').forEach(link => {
+        link.addEventListener('click', () => {
+          header.querySelectorAll('.app-subnav-link').forEach(item => item.classList.remove('active'));
+          link.classList.add('active');
+        });
+      });
+      document.getElementById('sidebarCollapse')?.addEventListener('click', () => {
+        document.body.classList.toggle('sidebar-collapsed');
+        localStorage.setItem('srm_sidebar_collapsed_v8', String(document.body.classList.contains('sidebar-collapsed')));
+      });
+
+      if (localStorage.getItem('srm_sidebar_collapsed_v8') === 'true') {
+        document.body.classList.add('sidebar-collapsed');
+      }
 
       return { overlay, aside, header, footer };
     }

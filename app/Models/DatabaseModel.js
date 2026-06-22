@@ -7,9 +7,9 @@
   class DatabaseModel {
     constructor(config) {
       this.config = config || {};
-      this.sessionKey = this.config.SESSION_STORAGE_KEY || 'srm_documents_session_v6';
-      this.lastClientKey = this.config.LAST_CLIENT_KEY || 'srm_documents_last_client_v6';
-      this.localDatabaseKey = this.config.LOCAL_DATABASE_KEY || 'srm_documents_local_database_v6';
+      this.sessionKey = this.config.SESSION_STORAGE_KEY || 'srm_documents_session_v8';
+      this.lastClientKey = this.config.LAST_CLIENT_KEY || 'srm_documents_last_client_v8';
+      this.localDatabaseKey = this.config.LOCAL_DATABASE_KEY || 'srm_documents_local_database_v8';
       this.sessionStore = new window.SRM.Core.SessionStore(this.sessionKey);
       this.client = null;
       this.bootstrapCache = null;
@@ -186,7 +186,7 @@
         app: {
           name: 'SRM Workspace',
           department: 'Direction Clientèle — Département Grands Comptes',
-          version: '7.0.0',
+          version: '8.0.0',
           defaultCity: 'FES',
           creditor: 'SRM-FM',
           developerName: 'Hossame El Bezzari',

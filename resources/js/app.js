@@ -15,7 +15,7 @@
 
   window.SRM.meta = Object.freeze({
     name: 'SRM Workspace',
-    version: '7.0.0',
+    version: '8.0.0',
     architecture: 'Inertia-style component architecture · Metronic-inspired UI',
     developer: 'Hossame El Bezzari',
     matricule: '2373'

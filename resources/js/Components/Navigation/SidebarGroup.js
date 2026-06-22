@@ -23,7 +23,12 @@
       ).join('');
 
       return `<div class="app-nav-tree ${open ? 'is-open' : ''}" data-sidebar-group>
-        <button class="app-nav-parent ${open ? 'active' : ''}" type="button" data-sidebar-group-toggle="${id}" aria-expanded="${open}">
+        <button
+          class="app-nav-parent ${open ? 'active' : ''}"
+          type="button"
+          data-sidebar-group-toggle="${id}"
+          aria-expanded="${open}"
+        >
           <span class="app-nav-icon">${window.UI.icon(item.icon || 'folder')}</span>
           <span class="app-nav-label min-w-0 flex-1 truncate">${window.UI.esc(item.label)}</span>
           <span class="app-nav-chevron">${window.UI.icon('chevron')}</span>

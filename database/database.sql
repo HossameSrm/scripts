@@ -13,7 +13,7 @@ create table if not exists public.app_settings (
     id smallint primary key default 1 check (id = 1),
     app_name text not null default 'SRM Workspace',
     department text not null default 'Direction Clientèle — Département Grands Comptes',
-    version text not null default '7.0.0',
+    version text not null default '8.0.0',
     default_city text not null default 'FES',
     creditor text not null default 'SRM-FM',
     developer_name text not null default 'Hossame El Bezzari',
@@ -1019,7 +1019,7 @@ $$;
 grant execute on function public.admin_delete_user(text,uuid) to anon, authenticated;
 
 -- ---------- Seed initial ----------
-insert into public.app_settings(id,version) values(1,'7.0.0')
+insert into public.app_settings(id,version) values(1,'8.0.0')
 on conflict(id) do update set version=excluded.version, updated_at=now();
 
 do $$
