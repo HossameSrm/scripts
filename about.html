@@ -1,6 +1,20 @@
 <!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>À propos — SRM Documents</title>
 <script src="https://cdn.tailwindcss.com"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script><link rel="stylesheet" href="assets/css/app.css">
-<script src="assets/js/config.js" defer></script><script src="components/ui.js" defer></script><script src="components/navigation.js" defer></script><script src="assets/js/database.js" defer></script><script src="layouts/layout.js" defer></script></head>
+<!-- MVC application scripts -->
+  <script src="app/core/Namespace.js" defer></script>
+  <script src="app/config/app.config.js" defer></script>
+  <script src="app/core/EventBus.js" defer></script>
+  <script src="app/core/Router.js" defer></script>
+  <script src="app/core/SessionStore.js" defer></script>
+  <script src="app/views/components/UIComponents.js" defer></script>
+  <script src="app/models/DatabaseModel.js" defer></script>
+  <script src="app/models/AppModel.js" defer></script>
+  <script src="app/models/DocumentModel.js" defer></script>
+  <script src="app/views/components/NavigationView.js" defer></script>
+  <script src="app/views/layouts/AppLayoutView.js" defer></script>
+  <script src="app/controllers/LayoutController.js" defer></script>
+  <script src="app/bootstrap/layout.js" defer></script>
+</head>
 <body class="text-slate-800"><main class="min-h-screen"><div class="ui-page"><header class="ui-page-header"><div><p class="ui-kicker">Informations</p><h2 class="ui-page-title">À propos de l’application</h2><p class="ui-page-subtitle">Une solution interne unifiée pour la préparation et le suivi des documents du Département Grands Comptes.</p></div></header>
 <section class="ui-panel about-hero"><div class="about-avatar">HE</div><div><p class="ui-kicker">Concepteur et développeur</p><h3 class="mt-2 text-3xl font-black text-slate-900">Hossame El Bezzari</h3><p class="mt-2 font-black text-blue-600">Matricule 2373</p><p class="mt-4 max-w-3xl leading-7 text-slate-600">Cette application a été conçue et développée afin de simplifier la génération des facilités de paiement, des ordres de coupure et des mises en demeure, tout en centralisant les utilisateurs, les permissions, les clients et l’historique.</p></div></section>
 <div class="mt-6 grid gap-6 lg:grid-cols-2"><section class="ui-panel"><header class="ui-panel-header"><div><h3 class="ui-panel-title">Modules disponibles</h3><p class="ui-panel-text">Fonctionnalités principales de la plateforme.</p></div></header><div class="ui-panel-body ui-list">

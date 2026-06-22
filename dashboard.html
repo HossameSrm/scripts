@@ -6,7 +6,25 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
   <link rel="stylesheet" href="assets/css/app.css">
-  <script src="assets/js/config.js" defer></script><script src="components/ui.js" defer></script><script src="components/navigation.js" defer></script><script src="assets/js/database.js" defer></script><script src="layouts/layout.js" defer></script><script src="assets/js/dashboard.js" defer></script>
+
+<!-- MVC application scripts -->
+  <script src="app/core/Namespace.js" defer></script>
+  <script src="app/config/app.config.js" defer></script>
+  <script src="app/core/EventBus.js" defer></script>
+  <script src="app/core/Router.js" defer></script>
+  <script src="app/core/SessionStore.js" defer></script>
+  <script src="app/views/components/UIComponents.js" defer></script>
+  <script src="app/models/DatabaseModel.js" defer></script>
+  <script src="app/models/AppModel.js" defer></script>
+  <script src="app/models/DocumentModel.js" defer></script>
+  <script src="app/views/components/NavigationView.js" defer></script>
+  <script src="app/views/layouts/AppLayoutView.js" defer></script>
+  <script src="app/controllers/LayoutController.js" defer></script>
+  <script src="app/bootstrap/layout.js" defer></script>
+  <script src="app/models/DashboardModel.js" defer></script>
+  <script src="app/views/pages/DashboardView.js" defer></script>
+  <script src="app/controllers/DashboardController.js" defer></script>
+  <script src="app/bootstrap/dashboard.js" defer></script>
 </head>
 <body class="text-slate-800">
 <main class="min-h-screen"><div id="dashboardRoot" class="ui-page opacity-0 transition-opacity">

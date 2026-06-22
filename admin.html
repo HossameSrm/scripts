@@ -1,7 +1,25 @@
 <!DOCTYPE html>
 <html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Administration — SRM Documents</title>
 <script src="https://cdn.tailwindcss.com"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script><link rel="stylesheet" href="assets/css/app.css">
-<script src="assets/js/config.js" defer></script><script src="components/ui.js" defer></script><script src="components/navigation.js" defer></script><script src="assets/js/database.js" defer></script><script src="layouts/layout.js" defer></script><script src="assets/js/admin.js" defer></script></head>
+<!-- MVC application scripts -->
+  <script src="app/core/Namespace.js" defer></script>
+  <script src="app/config/app.config.js" defer></script>
+  <script src="app/core/EventBus.js" defer></script>
+  <script src="app/core/Router.js" defer></script>
+  <script src="app/core/SessionStore.js" defer></script>
+  <script src="app/views/components/UIComponents.js" defer></script>
+  <script src="app/models/DatabaseModel.js" defer></script>
+  <script src="app/models/AppModel.js" defer></script>
+  <script src="app/models/DocumentModel.js" defer></script>
+  <script src="app/views/components/NavigationView.js" defer></script>
+  <script src="app/views/layouts/AppLayoutView.js" defer></script>
+  <script src="app/controllers/LayoutController.js" defer></script>
+  <script src="app/bootstrap/layout.js" defer></script>
+  <script src="app/models/UserModel.js" defer></script>
+  <script src="app/views/pages/AdminView.js" defer></script>
+  <script src="app/controllers/AdminController.js" defer></script>
+  <script src="app/bootstrap/admin.js" defer></script>
+</head>
 <body class="text-slate-800"><main class="min-h-screen"><div class="ui-page">
 <header class="ui-page-header"><div><p class="ui-kicker">Administration</p><h2 class="ui-page-title">Utilisateurs et permissions</h2><p class="ui-page-subtitle">Créez les comptes, attribuez les modules autorisés et contrôlez les exports PDF/DOCX.</p></div><button id="addUserBtn" class="ui-btn ui-btn-primary"><span class="ui-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span> Nouvel utilisateur</button></header>
 <section id="adminStats" class="ui-grid-stats"></section>
