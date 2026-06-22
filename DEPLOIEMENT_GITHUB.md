@@ -10,7 +10,7 @@
 
 ## Mise à jour
 
-Les ressources utilisent la version `6.0.0` dans les URLs afin de limiter les problèmes de cache.
+Les ressources utilisent la version `7.0.0` dans les URLs afin de limiter les problèmes de cache.
 
 Après le déploiement :
 

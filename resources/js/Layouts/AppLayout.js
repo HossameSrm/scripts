@@ -2,7 +2,10 @@
   'use strict';
 
   class AppLayoutView {
-    constructor(navigationView) { this.navigationView = navigationView; }
+    constructor(sidebarComponent, headerComponent) {
+      this.sidebarComponent = sidebarComponent;
+      this.headerComponent = headerComponent;
+    }
 
     render({ db, user, permissions, page }) {
       document.body.classList.add('app-body');
@@ -15,11 +18,12 @@
       const aside = document.createElement('aside');
       aside.className = 'app-sidebar';
       aside.id = 'appSidebar';
-      aside.innerHTML = this.navigationView.renderSidebar({ db, user, permissions, page });
+      aside.innerHTML = this.sidebarComponent.render({ db, user, permissions, page });
 
       const header = document.createElement('header');
       header.className = 'app-topbar';
-      header.innerHTML = this.navigationView.renderHeader({ db, user, permissions, page });
+      header.id = 'appHeader';
+      header.innerHTML = this.headerComponent.render({ db, user, permissions, page });
 
       const footer = document.createElement('footer');
       footer.className = 'app-footer';
@@ -29,9 +33,11 @@
       document.body.prepend(aside);
       document.body.prepend(overlay);
       document.body.appendChild(footer);
-      document.body.dataset.layout = 'metronic-demo1-inspired';
+      document.body.dataset.layout = 'metronic-inertia-components-v7';
 
+      this.sidebarComponent.bind(document);
       document.getElementById('sidebarCollapse')?.addEventListener('click', () => document.body.classList.toggle('sidebar-collapsed'));
+
       return { overlay, aside, header, footer };
     }
 

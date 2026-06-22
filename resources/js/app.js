@@ -15,8 +15,8 @@
 
   window.SRM.meta = Object.freeze({
     name: 'SRM Workspace',
-    version: '6.0.0',
-    architecture: 'Inertia-style Metronic UI',
+    version: '7.0.0',
+    architecture: 'Inertia-style component architecture · Metronic-inspired UI',
     developer: 'Hossame El Bezzari',
     matricule: '2373'
   });

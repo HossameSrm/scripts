@@ -186,7 +186,7 @@
         app: {
           name: 'SRM Workspace',
           department: 'Direction Clientèle — Département Grands Comptes',
-          version: '6.0.0',
+          version: '7.0.0',
           defaultCity: 'FES',
           creditor: 'SRM-FM',
           developerName: 'Hossame El Bezzari',
