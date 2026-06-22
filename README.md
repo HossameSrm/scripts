@@ -103,28 +103,17 @@ Le projet n’utilise pas `database.json` comme base principale.
 window.APP_CONFIG = Object.freeze({
   SUPABASE_URL: 'https://xxxx.supabase.co',
   SUPABASE_ANON_KEY: 'votre-cle-anon-public',
-  SESSION_STORAGE_KEY: 'srm_documents_session_v2',
-  LAST_CLIENT_KEY: 'srm_documents_last_client_v2'
+  DATA_MODE: 'auto',
+  SESSION_STORAGE_KEY: 'srm_documents_session_v3',
+  LAST_CLIENT_KEY: 'srm_documents_last_client_v3'
 });
 ```
 
 Ne jamais placer la clé `service_role` dans GitHub ou dans le navigateur.
 
-## Comptes initiaux
+## Compte propriétaire initial
 
-### Propriétaire
-
-- Identifiant : `admin`
-- Matricule : `2373`
-- Mot de passe : `admin123`
-
-### Utilisateur de démonstration
-
-- Identifiant : `user2373`
-- Matricule : `2451`
-- Mot de passe : `user123`
-
-Les mots de passe doivent être changés après la première connexion.
+Le compte propriétaire est créé automatiquement par `database.sql` et par la base locale de secours. Les identifiants ne sont jamais préremplis ni affichés dans la page d’authentification.
 
 ## Permissions
 
@@ -150,3 +139,14 @@ Les modules disponibles sont : Dashboard, Facilité de paiement, Ordre de coupur
 ## Développeur
 
 Conçu et développé par **Hossame El Bezzari — Matricule 2373**.
+
+## Mode de base de données
+
+L’application utilise `DATA_MODE: 'auto'` dans `app/config/app.config.js` :
+
+- si Supabase est configuré, tous les postes utilisent la même base PostgreSQL en ligne ;
+- si Supabase n’est pas encore configuré, l’application démarre avec une base locale du navigateur afin de permettre les tests immédiats.
+
+La base locale est propre à chaque navigateur et ne synchronise pas les utilisateurs entre les postes. Pour un usage partagé entre les employés, exécutez `database.sql` dans Supabase puis renseignez uniquement `SUPABASE_URL` et `SUPABASE_ANON_KEY`.
+
+Les champs de la page d’authentification restent toujours vides et aucun mot de passe n’est affiché dans l’interface.

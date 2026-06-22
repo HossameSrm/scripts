@@ -34,7 +34,7 @@
         </div>
         <div class="auth-note">
           <p class="font-black">Une seule application, une seule base</p>
-          <p class="mt-2 text-sm leading-6 text-blue-50">Utilisateurs, permissions, clients, contrats, arriérés et historique centralisés dans Supabase.</p>
+          <p class="mt-2 text-sm leading-6 text-blue-50">Utilisateurs, permissions, clients, contrats, arriérés et historique réunis dans une seule application.</p>
         </div>
       </div>
       <div class="auth-form-panel">
@@ -43,18 +43,13 @@
         <h2 class="mt-2 text-3xl font-black text-slate-900">Bienvenue</h2>
         <p class="mt-3 text-sm leading-6 text-slate-500">Connectez-vous avec votre identifiant ou votre matricule.</p>
 
-        <div id="configWarning" class="mt-6 hidden rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm font-bold text-amber-800">
-          La base Supabase n’est pas encore configurée. Complétez <code>app/config/app.config.js</code> après avoir exécuté <code>database.sql</code>.
-        </div>
-
         <form id="loginForm" class="mt-8 space-y-5">
-          <label class="block"><span class="ui-label">Identifiant ou matricule</span><input id="username" autocomplete="username" value="admin" class="ui-input !py-4" required></label>
-          <label class="block"><span class="ui-label">Mot de passe</span><div class="relative"><input id="password" type="password" autocomplete="current-password" value="admin123" class="ui-input !py-4 pr-14" required><button id="togglePassword" type="button" class="absolute right-2 top-1/2 -translate-y-1/2 rounded-xl px-3 py-2 text-xs font-black text-blue-600">Afficher</button></div></label>
+          <label class="block"><span class="ui-label">Identifiant ou matricule</span><input id="username" autocomplete="username" class="ui-input !py-4" required></label>
+          <label class="block"><span class="ui-label">Mot de passe</span><div class="relative"><input id="password" type="password" autocomplete="current-password" class="ui-input !py-4 pr-14" required><button id="togglePassword" type="button" class="absolute right-2 top-1/2 -translate-y-1/2 rounded-xl px-3 py-2 text-xs font-black text-blue-600">Afficher</button></div></label>
           <p id="loginError" class="hidden rounded-2xl bg-red-50 px-4 py-3 text-sm font-bold text-red-600"></p>
           <button id="loginButton" class="ui-btn ui-btn-primary w-full !py-4">Se connecter</button>
         </form>
 
-        <div class="mt-6 rounded-2xl border border-blue-100 bg-blue-50/70 p-4 text-sm text-blue-800"><p class="font-black">Compte propriétaire initial</p><p class="mt-1 font-semibold">Identifiant : <strong>admin</strong> · Mot de passe : <strong>admin123</strong></p><p class="mt-2 text-xs">Changez ce mot de passe après la première connexion.</p></div>
         <p class="mt-7 text-center text-xs font-bold text-slate-400">Conçu et développé par Hossame El Bezzari — Matricule 2373</p>
       </div>
     </section>

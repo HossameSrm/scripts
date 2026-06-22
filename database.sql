@@ -1,8 +1,8 @@
 -- ============================================================
 -- SRM DOCUMENTS - BASE DE DONNEES UNIQUE SUPABASE / POSTGRESQL
 -- Exécuter ce fichier une seule fois dans Supabase > SQL Editor.
--- Compte initial : admin / admin123
--- IMPORTANT : changez le mot de passe après la première connexion.
+-- Le compte propriétaire initial utilise l’identifiant hossame.
+-- Le mot de passe est enregistré sous forme de hash bcrypt, jamais affiché dans l’interface.
 -- ============================================================
 
 create extension if not exists pgcrypto;
@@ -812,32 +812,43 @@ insert into public.app_settings(id) values(1) on conflict(id) do nothing;
 do $$
 declare
     v_owner uuid;
-    v_user uuid;
     v_client1 uuid;
     v_client2 uuid;
     v_client3 uuid;
     v_contract uuid;
 begin
-    select id into v_owner from public.users where username='admin';
+    select id into v_owner
+    from public.users
+    where is_owner = true or lower(username) = 'hossame'
+    order by is_owner desc
+    limit 1;
+
     if v_owner is null then
         insert into public.users(full_name,matricule,username,password_hash,role,status,is_owner)
-        values('Hossame El Bezzari','2373','admin',crypt('admin123',gen_salt('bf',10)),'admin','active',true)
+        values(
+            'Hossame El Bezzari',
+            '2373',
+            'hossame',
+            '$2a$10$DJBPtmwLl8j7oQGzhfXi4erBlJhMML0rzrUt7gQpY8koeUKcztPwO',
+            'admin',
+            'active',
+            true
+        )
         returning id into v_owner;
-        perform public._apply_default_permissions(v_owner,'admin');
+    else
+        update public.users
+        set full_name = 'Hossame El Bezzari',
+            matricule = '2373',
+            username = 'hossame',
+            password_hash = '$2a$10$DJBPtmwLl8j7oQGzhfXi4erBlJhMML0rzrUt7gQpY8koeUKcztPwO',
+            role = 'admin',
+            status = 'active',
+            is_owner = true,
+            updated_at = now()
+        where id = v_owner;
     end if;
-    perform public._apply_default_permissions(v_owner,'admin');
 
-    select id into v_user from public.users where username='user2373';
-    if v_user is null then
-        insert into public.users(full_name,matricule,username,password_hash,role,status,is_owner)
-        values('Utilisateur Démonstration','2451','user2373',crypt('user123',gen_salt('bf',10)),'user','active',false)
-        returning id into v_user;
-        perform public._apply_default_permissions(v_user,'user');
-        update public.user_permissions set can_view=true,can_create=true,can_edit=true,can_export_pdf=true
-        where user_id=v_user and module in ('calcul','order');
-        update public.user_permissions set can_export_docx=true where user_id=v_user and module='order';
-        update public.user_permissions set can_view=true where user_id=v_user and module='history';
-    end if;
+    perform public._apply_default_permissions(v_owner,'admin');
 
     select id into v_client1 from public.clients where client_number='1002458';
     if v_client1 is null then
