@@ -10,7 +10,7 @@
 
 ## Mise à jour
 
-Les ressources utilisent la version `5.0.0` dans les URLs afin de limiter les problèmes de cache.
+Les ressources utilisent la version `6.0.0` dans les URLs afin de limiter les problèmes de cache.
 
 Après le déploiement :
 
@@ -21,7 +21,7 @@ Ctrl + F5
 Vous pouvez également ouvrir le lien avec :
 
 ```text
-?v=5
+?v=6
 ```
 
 ## Base partagée

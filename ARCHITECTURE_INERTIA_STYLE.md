@@ -34,6 +34,8 @@ Les Models ne génèrent pas d’interface. Ils centralisent les appels RPC, la 
 
 Chaque page contient uniquement la logique de présentation propre à son écran.
 
+La page `Clients/Index` constitue un espace de travail complet : identité du client, contrats multiples, services EAU/BT/MT, adresses, factures impayées, soldes et statuts.
+
 ### Layouts
 
 - `AuthLayout` : écran de connexion.

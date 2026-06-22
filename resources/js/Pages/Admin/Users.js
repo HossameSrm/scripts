@@ -5,7 +5,7 @@
 
 
   const modules = [
-    ['dashboard','Tableau de bord'],['calcul','Facilité de paiement'],['order','Ordre de coupure'],
+    ['dashboard','Tableau de bord'],['clients','Clients'],['calcul','Facilité de paiement'],['order','Ordre de coupure'],
     ['notice','Mise en demeure'],['history','Historique'],['admin','Administration'],['about','À propos']
   ];
   const actions = [['view','Accès'],['create','Créer'],['edit','Modifier'],['delete','Supprimer'],['export_pdf','PDF'],['export_docx','DOCX']];

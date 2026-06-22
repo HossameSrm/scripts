@@ -13,7 +13,7 @@ create table if not exists public.app_settings (
     id smallint primary key default 1 check (id = 1),
     app_name text not null default 'SRM Workspace',
     department text not null default 'Direction Clientèle — Département Grands Comptes',
-    version text not null default '5.0.0',
+    version text not null default '6.0.0',
     default_city text not null default 'FES',
     creditor text not null default 'SRM-FM',
     developer_name text not null default 'Hossame El Bezzari',
@@ -39,7 +39,7 @@ create table if not exists public.users (
 
 create table if not exists public.user_permissions (
     user_id uuid not null references public.users(id) on delete cascade,
-    module text not null check (module in ('dashboard','calcul','order','notice','history','admin','about')),
+    module text not null check (module in ('dashboard','clients','calcul','order','notice','history','admin','about')),
     can_view boolean not null default false,
     can_create boolean not null default false,
     can_edit boolean not null default false,
@@ -131,6 +131,16 @@ create index if not exists idx_contracts_client on public.contracts(client_id);
 create index if not exists idx_arrears_contract on public.arrears(contract_id);
 create index if not exists idx_documents_user on public.documents(created_by);
 create index if not exists idx_activity_created on public.activity_logs(created_at desc);
+
+
+-- Migration idempotente : ajoute le module Clients aux installations existantes.
+do $$
+begin
+    alter table public.user_permissions drop constraint if exists user_permissions_module_check;
+    alter table public.user_permissions add constraint user_permissions_module_check
+        check (module in ('dashboard','clients','calcul','order','notice','history','admin','about'));
+exception when duplicate_object then null;
+end $$;
 
 -- ---------- Sécurité : aucune table n'est accessible directement ----------
 alter table public.app_settings enable row level security;
@@ -241,16 +251,16 @@ declare
     m text;
     full_access boolean := p_role = 'admin';
 begin
-    foreach m in array array['dashboard','calcul','order','notice','history','admin','about'] loop
+    foreach m in array array['dashboard','clients','calcul','order','notice','history','admin','about'] loop
         insert into public.user_permissions(
             user_id,module,can_view,can_create,can_edit,can_delete,can_export_pdf,can_export_docx
         ) values (
             p_user_id,
             m,
             case when m in ('dashboard','about') then true else full_access end,
-            case when m in ('calcul','order','notice','admin') then full_access else false end,
-            case when m in ('calcul','order','notice','admin') then full_access else false end,
-            case when m in ('history','admin') then full_access else false end,
+            case when m in ('clients','calcul','order','notice','admin') then full_access else false end,
+            case when m in ('clients','calcul','order','notice','admin') then full_access else false end,
+            case when m in ('clients','history','admin') then full_access else false end,
             case when m in ('calcul','order','notice') then full_access else false end,
             case when m in ('calcul','order','notice') then full_access else false end
         )
@@ -375,7 +385,8 @@ begin
         from public.app_settings where id = 1
     ) s;
 
-    if public._has_permission(v_user_id,'calcul','view')
+    if public._has_permission(v_user_id,'clients','view')
+       or public._has_permission(v_user_id,'calcul','view')
        or public._has_permission(v_user_id,'order','view')
        or public._has_permission(v_user_id,'notice','view') then
         select coalesce(jsonb_agg(client_row order by client_row->>'name'), '[]'::jsonb)
@@ -442,6 +453,207 @@ end;
 $$;
 
 grant execute on function public.app_bootstrap(text) to anon, authenticated;
+
+-- ---------- Référentiel clients ----------
+create or replace function public.list_clients(p_token text)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public, extensions
+as $$
+declare
+    v_user_id uuid := public._session_user_id(p_token);
+    v_result jsonb;
+begin
+    if v_user_id is null then raise exception 'SESSION_INVALID'; end if;
+    if not public._has_permission(v_user_id,'clients','view') then raise exception 'PERMISSION_DENIED'; end if;
+
+    select coalesce(jsonb_agg(client_row order by client_row->>'name'), '[]'::jsonb)
+    into v_result
+    from (
+        select jsonb_build_object(
+            'id', c.id,
+            'clientNumber', c.client_number,
+            'type', c.client_type,
+            'name', c.name,
+            'cin', coalesce(c.cin_ice,''),
+            'phone', coalesce(c.phone,''),
+            'email', coalesce(c.email,''),
+            'representedBy', coalesce(c.represented_by,''),
+            'address', coalesce(c.address,''),
+            'city', coalesce(c.city,''),
+            'tourne', coalesce(c.tournee,''),
+            'status', c.status,
+            'created_at', c.created_at,
+            'updated_at', c.updated_at,
+            'contracts', coalesce((
+                select jsonb_agg(jsonb_build_object(
+                    'id', ct.id,
+                    'number', ct.contract_number,
+                    'address', coalesce(ct.address,''),
+                    'serviceCode', ct.service_code,
+                    'serviceLabel', ct.service_label,
+                    'balance', ct.balance,
+                    'status', ct.status,
+                    'arrears', coalesce((
+                        select jsonb_agg(jsonb_build_object(
+                            'id', a.id,
+                            'invoice', a.invoice_number,
+                            'product', a.product_month,
+                            'balance', a.balance,
+                            'status', a.status
+                        ) order by a.product_month, a.invoice_number)
+                        from public.arrears a where a.contract_id = ct.id
+                    ), '[]'::jsonb)
+                ) order by ct.contract_number)
+                from public.contracts ct where ct.client_id = c.id
+            ), '[]'::jsonb)
+        ) as client_row
+        from public.clients c
+    ) q;
+    return v_result;
+end;
+$$;
+grant execute on function public.list_clients(text) to anon, authenticated;
+
+create or replace function public.save_client(p_token text, p_client jsonb)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public, extensions
+as $$
+declare
+    v_user_id uuid := public._session_user_id(p_token);
+    v_client_id uuid;
+    v_editing boolean := nullif(trim(coalesce(p_client->>'id','')),'') is not null;
+    v_contract jsonb;
+    v_contract_id uuid;
+    v_arrear jsonb;
+    v_arrear_id uuid;
+    v_keep_contracts uuid[] := array[]::uuid[];
+    v_keep_arrears uuid[];
+    v_number text := trim(coalesce(p_client->>'clientNumber',''));
+    v_name text := trim(coalesce(p_client->>'name',''));
+    v_result jsonb;
+begin
+    if v_user_id is null then raise exception 'SESSION_INVALID'; end if;
+    if not public._has_permission(v_user_id,'clients',case when v_editing then 'edit' else 'create' end) then
+        raise exception 'PERMISSION_DENIED';
+    end if;
+    if v_number = '' or v_name = '' then raise exception 'CLIENT_REQUIRED'; end if;
+
+    if v_editing then
+        v_client_id := (p_client->>'id')::uuid;
+        if not exists(select 1 from public.clients where id = v_client_id) then raise exception 'CLIENT_NOT_FOUND'; end if;
+    else
+        v_client_id := gen_random_uuid();
+    end if;
+
+    if exists(select 1 from public.clients where lower(client_number)=lower(v_number) and id<>v_client_id) then
+        raise exception 'CLIENT_ALREADY_EXISTS';
+    end if;
+
+    insert into public.clients(id,client_number,client_type,name,cin_ice,phone,email,represented_by,address,city,tournee,status,created_by,updated_at)
+    values(
+        v_client_id,v_number,
+        case when p_client->>'type'='person' then 'person' else 'company' end,
+        v_name,nullif(trim(coalesce(p_client->>'cin','')),''),nullif(trim(coalesce(p_client->>'phone','')),''),
+        nullif(trim(coalesce(p_client->>'email','')),''),nullif(trim(coalesce(p_client->>'representedBy','')),''),
+        nullif(trim(coalesce(p_client->>'address','')),''),nullif(trim(coalesce(p_client->>'city','')),''),
+        nullif(trim(coalesce(p_client->>'tourne','')),''),case when p_client->>'status'='inactive' then 'inactive' else 'active' end,
+        v_user_id,now()
+    )
+    on conflict(id) do update set
+        client_number=excluded.client_number,client_type=excluded.client_type,name=excluded.name,cin_ice=excluded.cin_ice,
+        phone=excluded.phone,email=excluded.email,represented_by=excluded.represented_by,address=excluded.address,
+        city=excluded.city,tournee=excluded.tournee,status=excluded.status,updated_at=now();
+
+    for v_contract in select value from jsonb_array_elements(coalesce(p_client->'contracts','[]'::jsonb)) loop
+        if trim(coalesce(v_contract->>'number','')) = '' then raise exception 'CONTRACT_REQUIRED'; end if;
+        if nullif(trim(coalesce(v_contract->>'id','')),'') is not null then
+            v_contract_id := (v_contract->>'id')::uuid;
+            if not exists(select 1 from public.contracts where id=v_contract_id and client_id=v_client_id) then v_contract_id := gen_random_uuid(); end if;
+        else
+            v_contract_id := gen_random_uuid();
+        end if;
+        if exists(select 1 from public.contracts where lower(contract_number)=lower(trim(v_contract->>'number')) and id<>v_contract_id) then
+            raise exception 'CONTRACT_ALREADY_EXISTS';
+        end if;
+        v_keep_contracts := array_append(v_keep_contracts,v_contract_id);
+
+        insert into public.contracts(id,client_id,contract_number,service_code,service_label,address,balance,status,updated_at)
+        values(
+            v_contract_id,v_client_id,trim(v_contract->>'number'),
+            case when v_contract->>'serviceCode' in ('EAU','BT','MT') then v_contract->>'serviceCode' else 'EAU' end,
+            coalesce(nullif(trim(v_contract->>'serviceLabel'),''),'Facturation SRM-FM'),
+            nullif(trim(coalesce(v_contract->>'address','')),''),0,
+            case when v_contract->>'status'='inactive' then 'inactive' else 'active' end,now()
+        )
+        on conflict(id) do update set
+            contract_number=excluded.contract_number,service_code=excluded.service_code,service_label=excluded.service_label,
+            address=excluded.address,status=excluded.status,updated_at=now();
+
+        v_keep_arrears := array[]::uuid[];
+        for v_arrear in select value from jsonb_array_elements(coalesce(v_contract->'arrears','[]'::jsonb)) loop
+            if trim(coalesce(v_arrear->>'invoice','')) = '' or trim(coalesce(v_arrear->>'product','')) = '' then
+                raise exception 'ARREAR_REQUIRED';
+            end if;
+            if nullif(trim(coalesce(v_arrear->>'id','')),'') is not null then
+                v_arrear_id := (v_arrear->>'id')::uuid;
+                if not exists(select 1 from public.arrears where id=v_arrear_id and contract_id=v_contract_id) then v_arrear_id := gen_random_uuid(); end if;
+            else
+                v_arrear_id := gen_random_uuid();
+            end if;
+            if exists(select 1 from public.arrears where contract_id=v_contract_id and lower(invoice_number)=lower(trim(v_arrear->>'invoice')) and id<>v_arrear_id) then
+                raise exception 'INVOICE_ALREADY_EXISTS';
+            end if;
+            v_keep_arrears := array_append(v_keep_arrears,v_arrear_id);
+            insert into public.arrears(id,contract_id,invoice_number,product_month,balance,status,updated_at)
+            values(
+                v_arrear_id,v_contract_id,trim(v_arrear->>'invoice'),trim(v_arrear->>'product'),
+                greatest(coalesce((v_arrear->>'balance')::numeric,0),0),
+                case when v_arrear->>'status' in ('paid','cancelled') then v_arrear->>'status' else 'unpaid' end,now()
+            )
+            on conflict(id) do update set invoice_number=excluded.invoice_number,product_month=excluded.product_month,
+                balance=excluded.balance,status=excluded.status,updated_at=now();
+        end loop;
+        delete from public.arrears where contract_id=v_contract_id and not (id = any(v_keep_arrears));
+        update public.contracts set balance=coalesce((select sum(balance) from public.arrears where contract_id=v_contract_id and status='unpaid'),0),updated_at=now() where id=v_contract_id;
+    end loop;
+
+    delete from public.contracts where client_id=v_client_id and not (id = any(v_keep_contracts));
+    insert into public.activity_logs(user_id,action,module,description,metadata)
+    values(v_user_id,case when v_editing then 'update_client' else 'create_client' end,'clients',
+           case when v_editing then 'Client modifié : ' else 'Client créé : ' end || v_name,
+           jsonb_build_object('client_id',v_client_id));
+
+    select value into v_result from jsonb_array_elements(public.list_clients(p_token)) where value->>'id'=v_client_id::text limit 1;
+    return v_result;
+end;
+$$;
+grant execute on function public.save_client(text,jsonb) to anon, authenticated;
+
+create or replace function public.delete_client(p_token text, p_client_id uuid)
+returns boolean
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+    v_user_id uuid := public._session_user_id(p_token);
+    v_name text;
+begin
+    if v_user_id is null then raise exception 'SESSION_INVALID'; end if;
+    if not public._has_permission(v_user_id,'clients','delete') then raise exception 'PERMISSION_DENIED'; end if;
+    select name into v_name from public.clients where id=p_client_id;
+    if v_name is null then raise exception 'CLIENT_NOT_FOUND'; end if;
+    insert into public.activity_logs(user_id,action,module,description,metadata)
+    values(v_user_id,'delete_client','clients','Client supprimé : '||v_name,jsonb_build_object('client_id',p_client_id));
+    delete from public.clients where id=p_client_id;
+    return true;
+end;
+$$;
+grant execute on function public.delete_client(text,uuid) to anon, authenticated;
 
 -- ---------- Dashboard / historique ----------
 create or replace function public.dashboard_data(p_token text)
@@ -720,7 +932,7 @@ begin
     if v_target.role='admin' and not public._is_owner(v_caller) then raise exception 'OWNER_REQUIRED'; end if;
 
     for v_item in select * from jsonb_each(coalesce(p_permissions,'{}'::jsonb)) loop
-        if v_item.key in ('dashboard','calcul','order','notice','history','admin','about') then
+        if v_item.key in ('dashboard','clients','calcul','order','notice','history','admin','about') then
             v_value := v_item.value;
             insert into public.user_permissions(user_id,module,can_view,can_create,can_edit,can_delete,can_export_pdf,can_export_docx)
             values(
@@ -807,7 +1019,8 @@ $$;
 grant execute on function public.admin_delete_user(text,uuid) to anon, authenticated;
 
 -- ---------- Seed initial ----------
-insert into public.app_settings(id) values(1) on conflict(id) do nothing;
+insert into public.app_settings(id,version) values(1,'6.0.0')
+on conflict(id) do update set version=excluded.version, updated_at=now();
 
 do $$
 declare

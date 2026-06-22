@@ -3,6 +3,7 @@
 
   const fallbackRoutes = [
     { href: 'dashboard.html', key: 'dashboard', module: 'dashboard', label: 'Tableau de bord', icon: 'dashboard' },
+    { href: 'client.html', key: 'clients', module: 'clients', label: 'Clients', icon: 'client' },
     { href: 'calcul.html', key: 'calcul', module: 'calcul', label: 'Facilité de paiement', icon: 'calc' },
     { href: 'order_coupure.html', key: 'order', module: 'order', label: 'Ordre de coupure', icon: 'cut' },
     { href: 'mise_en_demeure.html', key: 'notice', module: 'notice', label: 'Mise en demeure', icon: 'letter' },
@@ -19,6 +20,7 @@
     currentKey() {
       const file = (location.pathname.split('/').pop() || '').toLowerCase();
       if (file.includes('dashboard')) return 'dashboard';
+      if (file.includes('client')) return 'clients';
       if (file.includes('order')) return 'order';
       if (file.includes('mise')) return 'notice';
       if (file.includes('history')) return 'history';

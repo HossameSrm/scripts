@@ -9,67 +9,72 @@
   <title>Tableau de bord — SRM Workspace</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-  <link rel="stylesheet" href="resources/css/app.css?v=5.0.0">
-
-  <script src="resources/js/Core/Namespace.js?v=5.0.0" defer></script>
-  <script src="resources/js/app.js?v=5.0.0" defer></script>
-  <script src="config/app.js?v=5.0.0" defer></script>
-  <script src="resources/js/Core/EventBus.js?v=5.0.0" defer></script>
-  <script src="routes/web.js?v=5.0.0" defer></script>
-  <script src="resources/js/Core/Router.js?v=5.0.0" defer></script>
-  <script src="resources/js/Core/SessionStore.js?v=5.0.0" defer></script>
-  <script src="resources/js/Components/UI.js?v=5.0.0" defer></script>
-  <script src="app/Models/DatabaseModel.js?v=5.0.0" defer></script>
-  <script src="app/Models/AppModel.js?v=5.0.0" defer></script>
-  <script src="app/Models/DocumentModel.js?v=5.0.0" defer></script>
-  <script src="resources/js/Components/Navigation.js?v=5.0.0" defer></script>
-  <script src="resources/js/Layouts/AppLayout.js?v=5.0.0" defer></script>
-  <script src="app/Http/Controllers/LayoutController.js?v=5.0.0" defer></script>
-  <script src="resources/js/Layouts/bootstrap.js?v=5.0.0" defer></script>
-  <script src="app/Models/DashboardModel.js?v=5.0.0" defer></script>
-  <script src="resources/js/Pages/Dashboard/Index.js?v=5.0.0" defer></script>
-  <script src="app/Http/Controllers/DashboardController.js?v=5.0.0" defer></script>
-  <script src="resources/js/Pages/Dashboard/bootstrap.js?v=5.0.0" defer></script>
+  <link rel="stylesheet" href="resources/css/app.css?v=6.0.0">
+  <script src="resources/js/Core/Namespace.js?v=6.0.0" defer></script>
+  <script src="resources/js/app.js?v=6.0.0" defer></script>
+  <script src="config/app.js?v=6.0.0" defer></script>
+  <script src="resources/js/Core/EventBus.js?v=6.0.0" defer></script>
+  <script src="routes/web.js?v=6.0.0" defer></script>
+  <script src="resources/js/Core/Router.js?v=6.0.0" defer></script>
+  <script src="resources/js/Core/SessionStore.js?v=6.0.0" defer></script>
+  <script src="resources/js/Components/UI.js?v=6.0.0" defer></script>
+  <script src="app/Models/DatabaseModel.js?v=6.0.0" defer></script>
+  <script src="app/Models/AppModel.js?v=6.0.0" defer></script>
+  <script src="app/Models/DocumentModel.js?v=6.0.0" defer></script>
+  <script src="resources/js/Components/Navigation.js?v=6.0.0" defer></script>
+  <script src="resources/js/Layouts/AppLayout.js?v=6.0.0" defer></script>
+  <script src="app/Http/Controllers/LayoutController.js?v=6.0.0" defer></script>
+  <script src="resources/js/Layouts/bootstrap.js?v=6.0.0" defer></script>
+  <script src="app/Models/DashboardModel.js?v=6.0.0" defer></script>
+  <script src="resources/js/Pages/Dashboard/Index.js?v=6.0.0" defer></script>
+  <script src="app/Http/Controllers/DashboardController.js?v=6.0.0" defer></script>
+  <script src="resources/js/Pages/Dashboard/bootstrap.js?v=6.0.0" defer></script>
 </head>
-<body class="text-slate-800" data-build="5.0.0">
+<body class="text-slate-800" data-build="6.0.0">
 <main class="min-h-screen">
   <div id="dashboardRoot" class="ui-page opacity-0 transition-opacity">
-    <section class="dashboard-hero">
-      <div class="dashboard-hero-copy">
-        <p class="ui-kicker">Centre de pilotage</p>
-        <h2 id="dashboardGreeting" class="dashboard-hero-title">Bonjour.</h2>
-        <p class="dashboard-hero-text">Retrouvez vos indicateurs, vos accès et les dernières opérations depuis un seul espace de travail.</p>
-        <div id="heroActions" class="dashboard-hero-actions"></div>
+    <section class="metronic-page-heading">
+      <div>
+        <p class="metronic-breadcrumb">Tableaux de bord <span>/</span> Vue générale</p>
+        <h2 id="dashboardGreeting">Tableau de bord</h2>
+        <p>Centre de pilotage de la gestion documentaire Grands Comptes.</p>
       </div>
-      <div class="dashboard-hero-visual">
-        <div class="dashboard-visual-card card-one"><span>PDF</span><strong>Export rapide</strong></div>
-        <div class="dashboard-visual-card card-two"><span>DOCX</span><strong>Documents éditables</strong></div>
-        <div class="dashboard-visual-center">SR</div>
-      </div>
+      <div id="heroActions" class="flex flex-wrap gap-2"></div>
     </section>
 
-    <section id="statsGrid" class="ui-grid-stats mt-5"></section>
+    <section class="metronic-dashboard-top mt-5">
+      <div id="statsGrid" class="metronic-metric-grid"></div>
+      <article class="metronic-connect-card">
+        <div class="metronic-connect-copy">
+          <span>SRM Workspace</span>
+          <h3>Clients, contrats et documents dans un seul espace.</h3>
+          <p>Centralisez le référentiel, préparez les courriers et suivez chaque opération.</p>
+          <a href="client.html" class="metronic-text-link">Ouvrir le référentiel →</a>
+        </div>
+        <div class="metronic-connect-visual"><i>SR</i><span></span><b></b></div>
+      </article>
+    </section>
 
-    <div class="mt-5 grid gap-5 xl:grid-cols-[1.08fr_.92fr]">
-      <section class="ui-panel">
-        <header class="ui-panel-header">
-          <div><p class="ui-kicker">Accès directs</p><h3 class="ui-panel-title mt-1">Créer un document</h3><p class="ui-panel-text">Ouvrez un générateur autorisé.</p></div>
-        </header>
+    <section class="metronic-dashboard-middle mt-5">
+      <article class="ui-panel metronic-highlight-panel">
+        <header class="ui-panel-header"><div><h3 class="ui-panel-title">Indicateurs clés</h3><p class="ui-panel-text">Vue consolidée de votre espace.</p></div><button class="ui-icon-button">•••</button></header>
+        <div id="highlights" class="ui-panel-body"></div>
+      </article>
+      <article class="ui-panel metronic-chart-panel">
+        <header class="ui-panel-header"><div><h3 class="ui-panel-title">Activité récente</h3><p class="ui-panel-text">Opérations enregistrées sur les 7 derniers jours.</p></div><span class="ui-badge ui-badge-blue">7 jours</span></header>
+        <div id="activityChart" class="ui-panel-body"></div>
+      </article>
+    </section>
+
+    <section class="metronic-dashboard-bottom mt-5">
+      <article class="ui-panel">
+        <header class="ui-panel-header"><div><h3 class="ui-panel-title">Accès directs</h3><p class="ui-panel-text">Ouvrez rapidement un module autorisé.</p></div></header>
         <div id="quickActions" class="ui-panel-body quick-actions"></div>
-      </section>
-
-      <section class="ui-panel">
-        <header class="ui-panel-header">
-          <div><p class="ui-kicker">Journal</p><h3 class="ui-panel-title mt-1">Activité récente</h3><p class="ui-panel-text">Dernières opérations enregistrées.</p></div>
-          <a class="ui-btn ui-btn-secondary" href="history.html">Tout afficher</a>
-        </header>
+      </article>
+      <article class="ui-panel">
+        <header class="ui-panel-header"><div><h3 class="ui-panel-title">Dernières opérations</h3><p class="ui-panel-text">Journal des activités les plus récentes.</p></div><a class="ui-btn ui-btn-secondary" href="history.html">Tout afficher</a></header>
         <div id="recentActivity" class="ui-panel-body ui-list"></div>
-      </section>
-    </div>
-
-    <section class="dashboard-system-strip mt-5">
-      <div><span class="system-status-dot"></span><strong>Application opérationnelle</strong><small>Mode local disponible · Supabase prêt à connecter</small></div>
-      <div class="dashboard-system-meta"><span>Version 5.0.0</span><span>Design Inertia-style</span><span>Light UI</span></div>
+      </article>
     </section>
   </div>
 </main>

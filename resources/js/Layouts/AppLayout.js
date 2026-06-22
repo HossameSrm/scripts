@@ -8,10 +8,6 @@
       document.body.classList.add('app-body');
       document.querySelector('main')?.classList.add('app-main');
 
-      const mesh = document.createElement('div');
-      mesh.className = 'app-background-mesh';
-      mesh.setAttribute('aria-hidden', 'true');
-
       const overlay = document.createElement('div');
       overlay.className = 'app-overlay';
       overlay.id = 'appOverlay';
@@ -25,13 +21,18 @@
       header.className = 'app-topbar';
       header.innerHTML = this.navigationView.renderHeader({ db, user, permissions, page });
 
+      const footer = document.createElement('footer');
+      footer.className = 'app-footer';
+      footer.innerHTML = `<span>© 2026 SRM Workspace</span><span>Développé par <strong>Hossame El Bezzari</strong> · Matricule 2373</span>`;
+
       document.body.prepend(header);
       document.body.prepend(aside);
       document.body.prepend(overlay);
-      document.body.prepend(mesh);
-      document.body.dataset.layout = 'inertia-style';
+      document.body.appendChild(footer);
+      document.body.dataset.layout = 'metronic-demo1-inspired';
 
-      return { overlay, aside, header };
+      document.getElementById('sidebarCollapse')?.addEventListener('click', () => document.body.classList.toggle('sidebar-collapsed'));
+      return { overlay, aside, header, footer };
     }
 
     renderDatabaseError(message) {

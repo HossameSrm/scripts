@@ -3,6 +3,7 @@
 
   window.SRM_ROUTES = Object.freeze([
     { href: 'dashboard.html', key: 'dashboard', module: 'dashboard', label: 'Tableau de bord', icon: 'dashboard', page: 'Dashboard/Index' },
+    { href: 'client.html', key: 'clients', module: 'clients', label: 'Clients', icon: 'client', page: 'Clients/Index' },
     { href: 'calcul.html', key: 'calcul', module: 'calcul', label: 'Facilité de paiement', icon: 'calc', page: 'Documents/PaymentSchedule' },
     { href: 'order_coupure.html', key: 'order', module: 'order', label: 'Ordre de coupure', icon: 'cut', page: 'Documents/CutOrder' },
     { href: 'mise_en_demeure.html', key: 'notice', module: 'notice', label: 'Mise en demeure', icon: 'letter', page: 'Documents/FormalNotice' },

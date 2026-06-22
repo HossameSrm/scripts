@@ -1,15 +1,15 @@
 (function (window) {
   'use strict';
 
-  const MODULES = ['dashboard', 'calcul', 'order', 'notice', 'history', 'admin', 'about'];
+  const MODULES = ['dashboard', 'clients', 'calcul', 'order', 'notice', 'history', 'admin', 'about'];
   const ACTIONS = ['view', 'create', 'edit', 'delete', 'export_pdf', 'export_docx'];
 
   class DatabaseModel {
     constructor(config) {
       this.config = config || {};
-      this.sessionKey = this.config.SESSION_STORAGE_KEY || 'srm_documents_session_v5';
-      this.lastClientKey = this.config.LAST_CLIENT_KEY || 'srm_documents_last_client_v5';
-      this.localDatabaseKey = this.config.LOCAL_DATABASE_KEY || 'srm_documents_local_database_v5';
+      this.sessionKey = this.config.SESSION_STORAGE_KEY || 'srm_documents_session_v6';
+      this.lastClientKey = this.config.LAST_CLIENT_KEY || 'srm_documents_last_client_v6';
+      this.localDatabaseKey = this.config.LOCAL_DATABASE_KEY || 'srm_documents_local_database_v6';
       this.sessionStore = new window.SRM.Core.SessionStore(this.sessionKey);
       this.client = null;
       this.bootstrapCache = null;
@@ -120,7 +120,11 @@
         ['PASSWORD_TOO_SHORT', 'Le mot de passe doit contenir au moins 6 caractères.'],
         ['OWNER_REQUIRED', 'Seul le propriétaire peut gérer les administrateurs.'],
         ['OWNER_PROTECTED', 'Le compte propriétaire est protégé.'],
-        ['SELF_DELETE_FORBIDDEN', 'Vous ne pouvez pas supprimer votre propre compte.']
+        ['SELF_DELETE_FORBIDDEN', 'Vous ne pouvez pas supprimer votre propre compte.'],
+        ['CLIENT_ALREADY_EXISTS', 'Ce numéro client existe déjà.'],
+        ['CONTRACT_ALREADY_EXISTS', 'Un numéro de contrat existe déjà.'],
+        ['CLIENT_NOT_FOUND', 'Client introuvable.'],
+        ['CLIENT_REQUIRED', 'Le numéro client et le nom sont obligatoires.']
       ];
       return map.find(([key]) => text.includes(key))?.[1] || error?.message || 'Une erreur est survenue.';
     }
@@ -155,9 +159,9 @@
       MODULES.forEach(module => {
         permissions[module] = {
           view: module === 'dashboard' || module === 'about' ? true : full,
-          create: ['calcul', 'order', 'notice', 'admin'].includes(module) ? full : false,
-          edit: ['calcul', 'order', 'notice', 'admin'].includes(module) ? full : false,
-          delete: ['history', 'admin'].includes(module) ? full : false,
+          create: ['clients', 'calcul', 'order', 'notice', 'admin'].includes(module) ? full : false,
+          edit: ['clients', 'calcul', 'order', 'notice', 'admin'].includes(module) ? full : false,
+          delete: ['clients', 'history', 'admin'].includes(module) ? full : false,
           export_pdf: ['calcul', 'order', 'notice'].includes(module) ? full : false,
           export_docx: ['calcul', 'order', 'notice'].includes(module) ? full : false
         };
@@ -182,7 +186,7 @@
         app: {
           name: 'SRM Workspace',
           department: 'Direction Clientèle — Département Grands Comptes',
-          version: '5.0.0',
+          version: '6.0.0',
           defaultCity: 'FES',
           creditor: 'SRM-FM',
           developerName: 'Hossame El Bezzari',
@@ -342,12 +346,12 @@
 
         case 'app_bootstrap': {
           const user = this.localSessionUser(database, params.p_token);
-          const canUseClients = ['calcul', 'order', 'notice'].some(module => this.localHas(user, module, 'view'));
+          const canUseClients = this.localHas(user, 'clients', 'view') || ['calcul', 'order', 'notice'].some(module => this.localHas(user, module, 'view'));
           result = {
             app: this.clone(database.app),
             user: this.localPublicUser(user),
             permissions: this.clone(user.permissions),
-            clients: canUseClients ? this.clone(database.clients) : []
+            clients: canUseClients ? this.clone(database.clients.filter(item => item.status !== 'inactive')) : []
           };
           break;
         }
@@ -399,6 +403,86 @@
           const action = format === 'pdf' ? 'export_pdf' : 'export_docx';
           this.localLog(database, user, action, module, `${user.name} a exporté ${document.reference} en ${format.toUpperCase()}.`, { document_id: document.id });
           result = this.clone(document);
+          break;
+        }
+
+        case 'list_clients': {
+          const user = this.localSessionUser(database, params.p_token);
+          this.localRequire(user, 'clients', 'view');
+          result = this.clone(database.clients.slice().sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''))));
+          break;
+        }
+
+        case 'save_client': {
+          const user = this.localSessionUser(database, params.p_token);
+          const payload = this.clone(params.p_client || {});
+          const editing = Boolean(payload.id);
+          this.localRequire(user, 'clients', editing ? 'edit' : 'create');
+          const clientNumber = String(payload.clientNumber || '').trim();
+          const nameValue = String(payload.name || '').trim();
+          if (!clientNumber || !nameValue) throw this.localError('CLIENT_REQUIRED');
+          if (database.clients.some(item => item.id !== payload.id && String(item.clientNumber).toLowerCase() === clientNumber.toLowerCase())) throw this.localError('CLIENT_ALREADY_EXISTS');
+
+          const incomingContractNumbers = new Set();
+          for (const contract of (payload.contracts || [])) {
+            const number = String(contract.number || '').trim();
+            if (!number) throw this.localError('CONTRACT_REQUIRED');
+            if (incomingContractNumbers.has(number.toLowerCase())) throw this.localError('CONTRACT_ALREADY_EXISTS');
+            incomingContractNumbers.add(number.toLowerCase());
+            const duplicate = database.clients.some(client => (client.contracts || []).some(existing => existing.id !== contract.id && String(existing.number).toLowerCase() === number.toLowerCase()));
+            if (duplicate) throw this.localError('CONTRACT_ALREADY_EXISTS');
+          }
+
+          let target = database.clients.find(item => item.id === payload.id);
+          if (!target) {
+            target = { id: this.id('client'), created_at: new Date().toISOString() };
+            database.clients.push(target);
+          }
+          target.clientNumber = clientNumber;
+          target.type = payload.type === 'person' ? 'person' : 'company';
+          target.name = nameValue;
+          target.cin = String(payload.cin || '').trim();
+          target.phone = String(payload.phone || '').trim();
+          target.email = String(payload.email || '').trim();
+          target.representedBy = String(payload.representedBy || '').trim();
+          target.address = String(payload.address || '').trim();
+          target.city = String(payload.city || '').trim();
+          target.tourne = String(payload.tourne || '').trim();
+          target.status = payload.status === 'inactive' ? 'inactive' : 'active';
+          target.updated_at = new Date().toISOString();
+          target.contracts = (payload.contracts || []).map(contract => {
+            const arrears = (contract.arrears || []).map(arrear => ({
+              id: arrear.id || this.id('arrear'),
+              invoice: String(arrear.invoice || '').trim(),
+              product: String(arrear.product || '').trim(),
+              balance: Number(arrear.balance || 0),
+              status: ['paid', 'cancelled'].includes(arrear.status) ? arrear.status : 'unpaid'
+            }));
+            return {
+              id: contract.id || this.id('contract'),
+              number: String(contract.number || '').trim(),
+              serviceCode: ['EAU', 'BT', 'MT'].includes(contract.serviceCode) ? contract.serviceCode : 'EAU',
+              serviceLabel: String(contract.serviceLabel || '').trim(),
+              address: String(contract.address || '').trim(),
+              status: contract.status === 'inactive' ? 'inactive' : 'active',
+              balance: arrears.filter(item => item.status === 'unpaid').reduce((sum, item) => sum + Number(item.balance || 0), 0),
+              arrears
+            };
+          });
+          this.localLog(database, user, editing ? 'update_client' : 'create_client', 'clients', `${editing ? 'Client modifié' : 'Client créé'} : ${target.name}.`, { client_id: target.id });
+          result = this.clone(target);
+          break;
+        }
+
+        case 'delete_client': {
+          const user = this.localSessionUser(database, params.p_token);
+          this.localRequire(user, 'clients', 'delete');
+          const target = database.clients.find(item => item.id === params.p_client_id);
+          if (!target) throw this.localError('CLIENT_NOT_FOUND');
+          this.localLog(database, user, 'delete_client', 'clients', `Client supprimé : ${target.name}.`, { client_id: target.id });
+          database.clients = database.clients.filter(item => item.id !== target.id);
+          database.documents = database.documents.map(document => document.client_id === target.id ? { ...document, client_id: null } : document);
+          result = true;
           break;
         }
 
