@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Tableau de bord — SRM Documents</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <link rel="stylesheet" href="assets/css/app.css">
+  <script src="assets/js/config.js" defer></script><script src="components/ui.js" defer></script><script src="components/navigation.js" defer></script><script src="assets/js/database.js" defer></script><script src="layouts/layout.js" defer></script><script src="assets/js/dashboard.js" defer></script>
+</head>
+<body class="text-slate-800">
+<main class="min-h-screen"><div id="dashboardRoot" class="ui-page opacity-0 transition-opacity">
+  <header class="ui-page-header"><div><p class="ui-kicker">Vue générale</p><h2 class="ui-page-title">Tableau de bord</h2><p class="ui-page-subtitle">Consultez les chiffres clés et accédez rapidement aux générateurs autorisés.</p></div></header>
+  <section id="statsGrid" class="ui-grid-stats"></section>
+  <div class="mt-6 grid gap-6 xl:grid-cols-[1.15fr_.85fr]">
+    <section class="ui-panel"><header class="ui-panel-header"><div><h3 class="ui-panel-title">Actions rapides</h3><p class="ui-panel-text">Ouvrez directement un module documentaire.</p></div></header><div id="quickActions" class="ui-panel-body quick-actions"></div></section>
+    <section class="ui-panel"><header class="ui-panel-header"><div><h3 class="ui-panel-title">Activité récente</h3><p class="ui-panel-text">Dernières opérations enregistrées.</p></div><a class="ui-btn ui-btn-secondary" href="history.html">Voir tout</a></header><div id="recentActivity" class="ui-panel-body ui-list"></div></section>
+  </div>
+</div></main>
+</body></html>

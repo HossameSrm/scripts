@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Administration — SRM Documents</title>
+<script src="https://cdn.tailwindcss.com"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script><link rel="stylesheet" href="assets/css/app.css">
+<script src="assets/js/config.js" defer></script><script src="components/ui.js" defer></script><script src="components/navigation.js" defer></script><script src="assets/js/database.js" defer></script><script src="layouts/layout.js" defer></script><script src="assets/js/admin.js" defer></script></head>
+<body class="text-slate-800"><main class="min-h-screen"><div class="ui-page">
+<header class="ui-page-header"><div><p class="ui-kicker">Administration</p><h2 class="ui-page-title">Utilisateurs et permissions</h2><p class="ui-page-subtitle">Créez les comptes, attribuez les modules autorisés et contrôlez les exports PDF/DOCX.</p></div><button id="addUserBtn" class="ui-btn ui-btn-primary"><span class="ui-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span> Nouvel utilisateur</button></header>
+<section id="adminStats" class="ui-grid-stats"></section>
+<section class="ui-panel mt-6"><header class="ui-panel-header"><div><h3 class="ui-panel-title">Liste des utilisateurs</h3><p class="ui-panel-text">Le compte propriétaire ne peut pas être supprimé.</p></div></header><div class="ui-table-wrap"><table class="ui-table"><thead><tr><th>Utilisateur</th><th>Matricule</th><th>Rôle</th><th>Statut</th><th>Dernière connexion</th><th>Actions</th></tr></thead><tbody id="usersBody"><tr><td colspan="6"><div class="ui-empty"><p>Chargement...</p></div></td></tr></tbody></table></div></section>
+</div></main></body></html>

@@ -10,13 +10,13 @@
   }
 
   function allArrears(client) {
-    return client.contracts.flatMap(contract => (contract.arrears || []).map(item => ({
+    return (client.contracts || []).flatMap(contract => (contract.arrears || []).map(item => ({
       service: contract.serviceCode,
       contract: contract.number,
       address: contract.address,
       invoice: item.invoice,
       product: item.product,
-      balance: item.balance
+      balance: Number(item.balance) || 0
     })));
   }
 
@@ -42,7 +42,7 @@
     const contracts = document.getElementById('contractsList');
     if (contracts && typeof window.addContract === 'function') {
       contracts.innerHTML = '';
-      client.contracts.forEach(contract => window.addContract({ selected: true, number: contract.number, address: contract.address }));
+      (client.contracts || []).forEach(contract => window.addContract({ selected: true, number: contract.number, address: contract.address }));
     }
     const arrears = allArrears(client);
     setValue('includeArrears', arrears.length > 0, 'change');
@@ -69,7 +69,7 @@
       clientsContainer.innerHTML = '';
       window.addClient({
         clientNumber: client.clientNumber,
-        contracts: client.contracts.map(contract => ({ contractNumber: contract.number, service: contract.serviceLabel, amount: contract.balance }))
+        contracts: (client.contracts || []).map(contract => ({ contractNumber: contract.number, service: contract.serviceLabel, amount: Number(contract.balance) || 0 }))
       }, false);
     }
     if (typeof window.scheduleAutoCalculate === 'function') window.scheduleAutoCalculate();
@@ -77,9 +77,6 @@
     return true;
   }
 
-  function fill(client) {
-    fillSchedule(client) || fillOrder(client) || fillNotice(client);
-  }
-
+  function fill(client) { fillSchedule(client) || fillOrder(client) || fillNotice(client); }
   window.addEventListener('app:client-selected', event => fill(event.detail));
 })();
