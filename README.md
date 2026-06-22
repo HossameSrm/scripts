@@ -47,10 +47,6 @@ La page `client.html` permet de gérer depuis le même écran :
 
 Le choix « personne / société » appartient au demandeur de la facilité de paiement dans `calcul.html`; il n’est plus affiché dans la fiche client.
 
-## Connexion locale initiale
-
-- Identifiant : `hossame`
-- Mot de passe : `titigoza123`
 
 Ces identifiants ne sont pas affichés dans la page d’authentification.
 
