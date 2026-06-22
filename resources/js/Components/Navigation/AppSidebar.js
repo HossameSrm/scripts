@@ -39,25 +39,28 @@
           entries: [route('dashboard')].filter(permitted)
         },
         {
-          section: 'Gestion',
-          entries: [
-            permitted(clientRoute) ? {
-              id: 'clients',
-              label: 'Clients',
-              icon: 'client',
-              children: [
-                { ...clientRoute, label: 'Liste des clients', href: 'client.html' },
-                { ...clientRoute, key: null, label: 'Nouveau client', href: 'client.html?action=create', query: true }
-              ]
-            } : null,
-            documents.length ? {
-              id: 'documents',
-              label: 'Documents',
-              icon: 'file',
-              children: documents
-            } : null
-          ].filter(Boolean)
-        },
+  section: 'Gestion',
+  entries: [
+    permitted(clientRoute)
+      ? {
+          ...clientRoute,
+          id: 'clients',
+          label: 'Clients',
+          icon: 'client',
+          href: 'client.html'
+        }
+      : null,
+
+    documents.length
+      ? {
+          id: 'documents',
+          label: 'Documents',
+          icon: 'file',
+          children: documents
+        }
+      : null
+  ].filter(Boolean)
+},
         {
           section: 'Suivi',
           entries: [historyRoute].filter(permitted)
@@ -93,9 +96,9 @@
         ${group.section ? `<p class="app-nav-caption">${window.UI.esc(group.section)}</p>` : ''}
         <div class="app-nav-list">
           ${group.entries.map(entry => entry.children
-            ? this.groupComponent.render(entry, page)
-            : this.itemComponent.render(entry, page)
-          ).join('')}
+        ? this.groupComponent.render(entry, page)
+        : this.itemComponent.render(entry, page)
+      ).join('')}
         </div>
       </section>`;
     }
